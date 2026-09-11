@@ -1,0 +1,13 @@
+{
+  // Use the Quarto bundled with Positron (2026.08+ bundles 1.10.18 = CI pin),
+  // instead of any other Quarto found on PATH or in a Python venv.
+  "quarto.useBundledQuartoInPositron": true,
+  "files.encoding": "utf8",
+  "[quarto]": {
+    "editor.wordWrap": "on"
+  },
+  "files.exclude": {
+    "**/_book": true,
+    "**/.quarto": true
+  }
+}

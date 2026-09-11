@@ -1,0 +1,41 @@
+project:
+  type: book
+  output-dir: _book
+
+lang: en
+
+book:
+  title: "Introduction to Plant Bioinformatics"
+  author: "Rhosiqs"
+  date: last-modified
+  repo-url: https://github.com/rhosiqs/plant-bioinfo-intro-book
+  repo-subdir: en-US
+  repo-actions: [edit, issue]
+  output-file: handbook-en
+  downloads: [pdf]
+  sidebar:
+    tools:
+      - icon: translate
+        text: "中文版"
+        href: ../zh-TW/index.html
+  chapters:
+    - index.qmd
+    - part: "Basics"
+      chapters:
+        - chapters/01-fastq.qmd
+        - chapters/02-blast.qmd
+
+# Renders the per-page created / last-updated line (dates come from the
+# front matter, which tools/sync.py keeps up to date).
+filters:
+  - ../tools/page-dates.lua
+
+format:
+  html:
+    theme: cosmo
+    code-copy: true
+    include-in-header:
+      - ../_shared/lang-switch.html
+      - ../_shared/page-meta.html
+  typst:
+    papersize: a4

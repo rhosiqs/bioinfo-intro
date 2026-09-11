@@ -1,0 +1,9 @@
+/_site/
+**/_book/
+**/.quarto/
+*.typ
+__pycache__/
+/_translation-batch.md
+
+# Claude Code 的本機個人設定（輸出風格等），不需進版控
+.claude/settings.local.json

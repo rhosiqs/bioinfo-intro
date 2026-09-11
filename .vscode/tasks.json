@@ -1,0 +1,92 @@
+{
+  // Run via: Command Palette → "Tasks: Run Task"  (build task: Ctrl/Cmd+Shift+B)
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "New page (English)",
+      "detail": "建立英文新頁；中文檔、兩份章節清單、日期都會自動產生",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/new_page.py", "${input:pageTitle}", "--part", "${input:partId}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Sync book",
+      "detail": "依英文頁重建中文檔存根、兩份章節清單與建立/修改日期",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/sync.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Translation: status",
+      "detail": "列出每一頁的翻譯狀態",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/check_translations.py"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Translation: export AI batch",
+      "detail": "把所有待翻譯頁面匯出成一份 _translation-batch.md，貼給 AI",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/check_translations.py", "--export-batch"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Translation: mark current file as AI draft",
+      "detail": "標記目前這份中文檔為 AI 初稿（網站會顯示未審閱提示）",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/check_translations.py", "--mark-draft", "${file}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Translation: stamp current file as reviewed",
+      "detail": "我已審閱這份中文檔",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/check_translations.py", "--stamp", "${file}"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Translation: stamp ALL pending as reviewed",
+      "detail": "批次審核完成後一次蓋章（會把所有待審頁面標記為已審閱）",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/check_translations.py", "--stamp-all"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Build both editions and serve",
+      "type": "shell",
+      "command": "python3",
+      "windows": { "command": "python" },
+      "args": ["tools/build.py", "--serve"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": { "kind": "build", "isDefault": true }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "pageTitle",
+      "type": "promptString",
+      "description": "新頁面的英文標題，例如 Command-line basics"
+    },
+    {
+      "id": "partId",
+      "type": "promptString",
+      "description": "屬於 book.yml 裡的哪個 part id（留空 = 不分區）",
+      "default": "basics"
+    }
+  ]
+}

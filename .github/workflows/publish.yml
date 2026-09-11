@@ -1,0 +1,50 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:          # build + checks only, no deploy
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0      # full history: page "last updated" dates come from git
+
+      - name: Install CJK fonts (for the zh-TW PDF)
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
+
+      - uses: quarto-dev/quarto-actions/setup@v2
+        with:
+          version: 1.10.18          # pin; bump deliberately
+
+      - name: Build both editions
+        run: python3 tools/build.py
+
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5

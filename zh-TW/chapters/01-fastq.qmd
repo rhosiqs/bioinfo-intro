@@ -1,0 +1,32 @@
+---
+created: 2026-09-11
+updated: 2026-09-11
+translation-of: b883270ed5c5
+reviewed: 2026-09-11
+---
+
+# 讀取 FASTQ 檔案 {#sec-fastq}
+
+每筆 FASTQ 紀錄由四行組成。此步驟在整體流程中的位置請見 @fig-workflow。
+
+![整體流程](../images/workflow.svg){#fig-workflow width=60%}
+
+計算 gzip 壓縮的 FASTQ 檔中的 read 數：
+
+```bash
+zcat sample_R1.fastq.gz | awk 'END {print NR/4}'
+```
+
+以 Python 達成相同目的：
+
+```python
+import gzip
+
+with gzip.open("sample_R1.fastq.gz", "rt") as fh:
+    n = sum(1 for _ in fh) // 4
+print(n)
+```
+
+::: {.callout-warning}
+請勿用 Excel 開啟大型 FASTQ 檔案。
+:::

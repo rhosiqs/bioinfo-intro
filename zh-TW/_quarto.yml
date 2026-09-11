@@ -1,0 +1,45 @@
+project:
+  type: book
+  output-dir: _book
+
+lang: zh-TW
+
+book:
+  title: "植物生物資訊學入門"
+  author: "Rhosiqs"
+  date: last-modified
+  repo-url: https://github.com/rhosiqs/plant-bioinfo-intro-book
+  repo-subdir: zh-TW
+  repo-actions: [edit, issue]
+  output-file: handbook-zh-TW
+  downloads: [pdf]
+  sidebar:
+    tools:
+      - icon: translate
+        text: "English"
+        href: ../en-US/index.html
+  chapters:
+    - index.qmd
+    - part: "基礎"
+      chapters:
+        - chapters/01-fastq.qmd
+        - chapters/02-blast.qmd
+
+# Renders the per-page created / last-updated line (dates come from the
+# front matter, which tools/sync.py keeps up to date).
+filters:
+  - ../tools/page-dates.lua
+
+format:
+  html:
+    theme: cosmo
+    code-copy: true
+    include-in-header:
+      - ../_shared/lang-switch.html
+      - ../_shared/page-meta.html
+  typst:
+    papersize: a4
+    include-in-header:
+      text: |
+        #set text(font: ("Libertinus Serif", "Noto Serif CJK TC"), region: "TW")
+        #show raw: set text(font: ("DejaVu Sans Mono", "Noto Sans CJK TC"))

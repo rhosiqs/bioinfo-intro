@@ -1,0 +1,15 @@
+---
+created: 2026-09-11
+updated: 2026-09-11
+translation-of: 19007b642f70
+reviewed: 2026-09-11
+---
+
+# 在本機執行 BLAST {#sec-blast}
+
+如第 -@sec-fastq 章所述，序列必須先轉為 FASTA 格式。
+
+```bash
+makeblastdb -in arabidopsis_cds.fa -dbtype nucl -out tair_cds
+blastn -query my_gene.fa -db tair_cds -outfmt 6 -evalue 1e-10 > hits.tsv
+```

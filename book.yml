@@ -1,0 +1,13 @@
+# Book structure - the only file you edit besides the pages themselves.
+#
+# Each page declares which part it belongs to in its own front matter
+# (`part: basics`) and where it sits inside that part (`order: 20`).
+# This file just gives every part id its two titles and fixes the part order.
+# Pages with no `part:` appear at the top level, right after index.qmd.
+#
+# After editing this file run the "Sync book" task (or just build).
+
+parts:
+  - id: basics
+    en-US: "Basics"
+    zh-TW: "基礎"

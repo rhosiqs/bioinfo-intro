@@ -1,0 +1,9 @@
+---
+created: 2026-09-10
+updated: 2026-09-10
+---
+
+# Preface {.unnumbered}
+
+This handbook explains common bioinformatics tasks for plant wet-lab researchers.
+All examples use toy data; no real sequencing data is distributed with this book.
