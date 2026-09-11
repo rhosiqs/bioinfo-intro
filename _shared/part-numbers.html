@@ -1,0 +1,18 @@
+<style>
+/* Number the parts in the sidebar ("Part I: Basics" / "第一部分：基礎"), in
+   book.yml order. Quarto numbers chapters book-wide and leaves parts
+   unnumbered; the PDF template numbers parts itself, so the titles in
+   _quarto.yml stay plain and the prefix is added here, for HTML only. */
+#quarto-sidebar .sidebar-menu-container > ul {
+  counter-reset: book-part;
+}
+#quarto-sidebar .sidebar-menu-container > ul > li.sidebar-item-section {
+  counter-increment: book-part;
+}
+#quarto-sidebar .sidebar-menu-container > ul > li.sidebar-item-section > .sidebar-item-container .menu-text::before {
+  content: "Part " counter(book-part, upper-roman) ": ";
+}
+html[lang|="zh"] #quarto-sidebar .sidebar-menu-container > ul > li.sidebar-item-section > .sidebar-item-container .menu-text::before {
+  content: "第" counter(book-part, trad-chinese-informal) "部分：";
+}
+</style>

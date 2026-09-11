@@ -15,12 +15,11 @@ Command Palette → Tasks: Run Task → **New page (English)**，輸入英文標
 python3 tools/new_page.py "Command-line basics" --part basics
 ```
 
-它會建立 `en-US/chapters/command-line-basics.qmd`，並同時完成：建立中文存根、
+它會建立 `en-US/basics/command-line-basics.qmd`，並同時完成：建立中文存根、
 把這一頁加進兩份章節清單、寫入日期。你只要開始寫內容。
 
 ```markdown
 ---
-part: basics      # book.yml 裡的分區 id
 order: 30         # 同一分區內的順序，建議留 10 的間隔
 created: 2026-09-11
 updated: 2026-09-11
@@ -29,14 +28,19 @@ updated: 2026-09-11
 # Command-line basics {#sec-command-line-basics}
 ```
 
+- **每個分區（part）就是一個資料夾**：`en-US/<part id>/`，資料夾名稱就是 `book.yml`
+  裡的 id。把檔案搬到另一個資料夾就是換分區（中文檔要跟著搬到 `zh-TW/` 的同名位置）。
+  直接放在 `en-US/` 底下的頁面不屬於任何分區，排在前言後面。
 - 第一行是 `# 標題 {#sec-xxx}`，ID 用英文，中文版必須完全相同。
 - `created` / `updated` 由工具維護，不要手改。
 - 檔名不加數字前綴：順序由 `order:` 決定，所以調整順序不會改到網址。
+- 編號：章號是全書連續的（1, 2, 3…，這是 Quarto 的規則），分區則自動以
+  「Part I / 第一部分」編號，順序照 `book.yml`。分區標題不要自己加數字。
 - 圖片只放共用的 `_shared/images/`，`en-US/images/` 與 `zh-TW/images/` 是 `tools/sync.py`
   自動鏡射出來的實體複本（Typst PDF 不能引用專案根目錄外的檔案，連 symlink
   也會被拒絕，所以用複本而非共用路徑或連結）——不要手動編輯這兩個複本，引用方式
   不變：`![說明](../images/xxx.png){#fig-xxx}`。
-- 新增分區時才需要改根目錄的 `book.yml`（id + 兩種語言的標題）。
+- 新增分區時才需要改根目錄的 `book.yml`（id + 兩種語言的標題），分區的先後也在那裡調整。
 
 ## 翻譯與審核
 

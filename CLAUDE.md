@@ -15,8 +15,13 @@ HTML + PDF and deploy to GitHub Pages.
   outside its project directory). Never hand-edit those two copies.
 - **Never edit `en-US/` when translating**, and never mark a translation as
   reviewed for the user - only they approve translations.
-- A page's front matter holds `part`, `order` (authored) and `created`,
-  `updated`, `translation-of`, `reviewed` (machine-managed).
+- A page's part is its folder (`en-US/<part-id>/page.qmd`, ids declared in
+  `book.yml`); pages directly in `en-US/` have no part. Its front matter holds
+  `order` (authored) and `created`, `updated`, `translation-of`, `reviewed`
+  (machine-managed). There is no `part:` key.
+- Chapter numbers are Quarto's book-wide ones. Parts are numbered "Part I" /
+  "第一部分" by `_shared/part-numbers.html` (HTML) and the PDF template, so
+  part titles in `book.yml` carry no number.
 - Code blocks must be byte-identical across both editions; `{#sec-...}` labels
   must match. These are enforced and break the build (only warnings on
   OUTDATED pages, whose translation predates the current English).
@@ -26,7 +31,7 @@ HTML + PDF and deploy to GitHub Pages.
 ## Commands
 
 ```bash
-python3 tools/new_page.py "Title" --part basics   # add a page (does everything else)
+python3 tools/new_page.py "Title" --part basics   # add en-US/basics/title.qmd (does everything else)
 python3 tools/sync.py                             # derive zh-TW stubs, chapter lists, dates
 python3 tools/check_translations.py               # status; --pending, --strict, --export-batch
 python3 tools/check_translations.py --stamp FILE   # author marks a translation reviewed

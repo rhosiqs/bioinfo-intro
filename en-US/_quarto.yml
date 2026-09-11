@@ -22,11 +22,11 @@ book:
     - index.qmd
     - part: "Basics"
       chapters:
-        - chapters/01-fastq.qmd
-        - chapters/02-blast.qmd
-    - part: "1. Environment"
+        - basics/01-fastq.qmd
+        - basics/02-blast.qmd
+    - part: "Environment"
       chapters:
-        - chapters/01-system.qmd
+        - environment/system.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).
@@ -40,5 +40,6 @@ format:
     include-in-header:
       - ../_shared/lang-switch.html
       - ../_shared/page-meta.html
+      - ../_shared/part-numbers.html
   typst:
     papersize: a4

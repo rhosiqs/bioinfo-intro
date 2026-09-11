@@ -3,10 +3,11 @@
 Create a new English page, then let sync.py do the rest (zh-TW stub, chapter
 lists, dates). This is the only step that should need a decision from you.
 
-  python tools/new_page.py "Command-line basics"
-  python tools/new_page.py "Command-line basics" --part basics
+  python tools/new_page.py "Command-line basics" --part basics   # -> en-US/basics/command-line-basics.qmd
   python tools/new_page.py "Genome assembly" --part workflows --slug assembly
+  python tools/new_page.py "About this book"                     # -> en-US/about-this-book.qmd (no part)
 
+The part is the folder: each part id from book.yml is a folder in en-US/.
 The slug becomes both the file name and the URL, so it carries no number
 prefix: chapter order lives in the front matter (`order:`), which means
 reordering the book never breaks a link somebody bookmarked.
@@ -40,10 +41,9 @@ def slugify(title: str) -> str:
 def next_order(part: str | None) -> int:
     orders = []
     for rel in bu.en_pages():
-        fm = bu.get_fm(bu.read(bu.EN / rel))
-        if (fm.get("part") or None) == part:
+        if rel.as_posix() != "index.qmd" and bu.part_of(rel) == part:
             try:
-                orders.append(float(fm["order"]))
+                orders.append(float(bu.get_fm(bu.read(bu.EN / rel))["order"]))
             except (KeyError, ValueError):
                 pass
     return int(max(orders) + 10) if orders else 10
@@ -52,9 +52,9 @@ def next_order(part: str | None) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("title", help="English chapter title")
-    ap.add_argument("--part", default=None, help="part id from book.yml (omit for a top-level page)")
+    ap.add_argument("--part", default=None,
+                    help="part id from book.yml = the folder the page goes in (omit for a top-level page)")
     ap.add_argument("--slug", default=None, help="file name without .qmd (default: from the title)")
-    ap.add_argument("--dir", default="chapters", help="subdirectory of the English edition (default: chapters)")
     args = ap.parse_args()
 
     part = args.part or None
@@ -62,16 +62,13 @@ def main() -> int:
         print(f"WARNING  part '{part}' is not declared in book.yml - add it there to give it a Chinese title.")
 
     slug = args.slug or slugify(args.title)
-    rel = Path(args.dir) / f"{slug}.qmd"
+    rel = Path(part or ".") / f"{slug}.qmd"
     dst = bu.EN / rel
     if dst.exists():
         raise SystemExit(f"ERROR  {bu.EN.name}/{rel.as_posix()} already exists")
 
     body = TEMPLATE.format(title=args.title, slug=slug)
-    fm = {"order": next_order(part)}
-    if part:
-        fm = {"part": part, **fm}
-    bu.write(dst, bu.set_fm(body, fm))
+    bu.write(dst, bu.set_fm(body, {"order": next_order(part)}))
     print(f"created {bu.EN.name}/{rel.as_posix()}")
 
     subprocess.run([sys.executable, str(Path(__file__).with_name("sync.py"))], cwd=bu.ROOT, check=True)

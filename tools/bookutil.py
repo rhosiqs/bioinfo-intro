@@ -8,8 +8,9 @@ Design notes
   both chapter lists, the created / last-modified dates) is derived from it.
 * All machine-managed state lives in the YAML front matter of the .qmd files,
   so the repository stays self-describing and no side-car database can drift.
-* The translation hash covers the page BODY only, so refreshing a date or
-  changing `part:` never marks a reviewed translation as outdated.
+* The translation hash covers the page BODY only, so refreshing a date,
+  changing `order:` or moving a page to another part folder never marks a
+  reviewed translation as outdated.
 * No third-party dependencies: the tiny YAML reader below only has to cope with
   the flat `key: value` front matter this project writes itself.
 """
@@ -31,7 +32,7 @@ BOOK_YML = ROOT / "book.yml"
 SHARED_IMAGES = ROOT / "_shared" / "images"
 
 # Front matter keys we manage, in the order they are written back.
-FM_ORDER = ["part", "order", "created", "updated", "translation-of", "reviewed"]
+FM_ORDER = ["order", "created", "updated", "translation-of", "reviewed"]
 
 TODAY = datetime.date.today().isoformat()
 
@@ -214,6 +215,12 @@ def en_pages() -> list[Path]:
         p.relative_to(EN) for p in EN.rglob("*.qmd")
         if "_book" not in p.parts and not p.name.startswith("_")
     )
+
+
+def part_of(rel: Path) -> str | None:
+    """A page's part id is its top-level folder; pages directly in the edition
+    directory belong to no part."""
+    return rel.parts[0] if len(rel.parts) > 1 else None
 
 
 def sort_key(rel: Path, fm: dict[str, str]) -> tuple[float, str]:

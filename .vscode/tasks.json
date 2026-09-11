@@ -86,7 +86,7 @@
     {
       "id": "partId",
       "type": "promptString",
-      "description": "屬於 book.yml 裡的哪個 part id（留空 = 不分區）",
+      "description": "屬於 book.yml 裡的哪個 part id，也就是放進哪個資料夾（留空 = 不分區）",
       "default": "basics"
     }
   ]

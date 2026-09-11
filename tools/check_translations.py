@@ -4,7 +4,7 @@ Translation status and consistency checker for the en / zh-TW Quarto books.
 
 Status of each zh-TW page, from its `translation-of:` front matter key compared
 with the hash of the current English page BODY (front matter, i.e. dates and
-part/order, is deliberately excluded - housekeeping never invalidates a review):
+order, is deliberately excluded - housekeeping never invalidates a review):
 
   OK            reviewed against exactly this English text
   OUTDATED      the English text changed after the review

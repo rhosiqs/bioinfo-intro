@@ -1,13 +1,12 @@
 ---
+order: 20
 created: 2026-09-11
-updated: 2026-09-11
-translation-of: 19007b642f70
-reviewed: 2026-09-11
+updated: 2026-09-12
 ---
 
-# 在本機執行 BLAST {#sec-blast}
+# Running BLAST locally {#sec-blast}
 
-如第 -@sec-fastq 章所述，序列必須先轉為 FASTA 格式。
+As introduced in @sec-fastq, sequences first need to be in FASTA format.
 
 ```bash
 makeblastdb -in arabidopsis_cds.fa -dbtype nucl -out tair_cds

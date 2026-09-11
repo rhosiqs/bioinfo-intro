@@ -1,0 +1,13 @@
+---
+created: 2026-09-11
+updated: 2026-09-11
+translation-of: PLACEHOLDER
+---
+
+# System {#sec-01-system}
+
+Write the chapter here.
+
+## References {.unnumbered}
+
+- Author A, Author B. (Year). Title. *Journal*, Volume(Issue), Pages. <https://doi.org/...>

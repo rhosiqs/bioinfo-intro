@@ -1,0 +1,19 @@
+---
+order: 10
+created: 2026-09-11
+updated: 2026-09-12
+---
+
+# System {#sec-01-system}
+
+For the personal computers, mainly is using Windows or MacOS. While in the bioinformatics field, the main operation system is **Linux**.
+
+Linux, same as MacOS, is the Unix-baed operation system, so some of the packages 
+
+## Connect to Host
+
+## References {.unnumbered}
+
+- GeeksforGeeks. (2025, July 11). Basics of Computer and its Operations. GeeksforGeeks. https://www.geeksforgeeks.org/computer-science-fundamentals/basics-of-computer-and-its-operations/
+
+- GeeksforGeeks. (2026, June 11). Linux tutorial. GeeksforGeeks. https://www.geeksforgeeks.org/linux-unix/linux-tutorial/

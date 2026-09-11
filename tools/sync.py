@@ -8,8 +8,10 @@ For every en-US/**/*.qmd it will:
   2. create the matching zh-TW/**/*.qmd if it is missing (a copy of the English
      body, marked UNTRANSLATED so the site shows a notice);
   3. mirror the dates onto the zh-TW page;
-  4. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml plus
-     each page's `part:` / `order:` front matter.
+  4. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml,
+     each page's folder (the folder name is its part id) and `order:` front
+     matter. Part titles stay plain: the PDF template numbers parts itself
+     ("Part I") and _shared/part-numbers.html does the same in the HTML sidebar.
   5. mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
      file copies (Typst's PDF renderer can't reach outside its project
      directory, so images can't just live in `_shared/` and be referenced
@@ -39,7 +41,10 @@ STUB_NOTE = "PLACEHOLDER"
 
 def chapter_tree(pages: dict[Path, dict[str, str]]) -> tuple[list, list[str]]:
     """Return (ordered structure, warnings). Structure entries are either a page
-    path string or a dict {"part_id": ..., "pages": [...]}."""
+    path string or a dict {"part": {...}, "pages": [...]}.
+
+    A page's part is its top-level folder (en-US/basics/x.qmd -> part `basics`);
+    pages directly in the edition directory are top-level chapters."""
     parts = bu.load_parts()
     known = {p["id"]: p for p in parts}
     buckets: dict[str, list[Path]] = {p["id"]: [] for p in parts}
@@ -51,17 +56,20 @@ def chapter_tree(pages: dict[Path, dict[str, str]]) -> tuple[list, list[str]]:
         if rel.as_posix() == "index.qmd":
             index.append(rel)
             continue
-        part = fm.get("part")
+        if "part" in fm:
+            warnings.append(f"page {rel.as_posix()} has a `part:` key, which is ignored now - "
+                            f"the folder decides the part. Delete the line.")
+        part = bu.part_of(rel)
         if not part:
             loose.append(rel)
         elif part in buckets:
             buckets[part].append(rel)
         else:
             warnings.append(
-                f"page {rel.as_posix()} declares unknown part '{part}'. "
-                f"Add it to book.yml; using the id as its title for now."
+                f"folder {bu.EN.name}/{part}/ is not a part in book.yml. "
+                f"Add it there; using the folder name as its title for now."
             )
-            known.setdefault(part, {"id": part, "en": part, "zh-TW": part})
+            known.setdefault(part, {"id": part, "en-US": part, "zh-TW": part})
             buckets.setdefault(part, []).append(rel)
 
     key = lambda rel: bu.sort_key(rel, pages[rel])  # noqa: E731
