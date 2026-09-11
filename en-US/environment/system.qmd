@@ -9,12 +9,12 @@ updated: 2026-09-12
 
 For the personal computers, mainly is using Windows or MacOS. While in the bioinformatics field, the main operation system is **Linux**.
 
-Linux, same as MacOS, is the Unix-baed operation system, so some of the packages 
+Linux, same as MacOS, is the Unix-baed operation system, so some part of the commands are similar between them. Bioinformatics use Linx as the main operation due to Linux is **Free**, **Dev-free**, and most of the bioinfo packages are develop by Linux. Also, the server is also main the Linux-based environment. 
 
 ## Connect to Host
 
 ## References {.unnumbered}
 
-- GeeksforGeeks. (2025, July 11). Basics of Computer and its Operations. GeeksforGeeks. https://www.geeksforgeeks.org/computer-science-fundamentals/basics-of-computer-and-its-operations/
+- GeeksforGeeks. (2025, July 11). Basics of Computer and its Operations. GeeksforGeeks. [https://www.geeksforgeeks.org/computer-science-fundamentals/basics-of-computer-and-its-operations/](https://www.geeksforgeeks.org/computer-science-fundamentals/basics-of-computer-and-its-operations/)
 
-- GeeksforGeeks. (2026, June 11). Linux tutorial. GeeksforGeeks. https://www.geeksforgeeks.org/linux-unix/linux-tutorial/
+- GeeksforGeeks. (2026, June 11). Linux tutorial. GeeksforGeeks. [https://www.geeksforgeeks.org/linux-unix/linux-tutorial/](https://www.geeksforgeeks.org/linux-unix/linux-tutorial/)
