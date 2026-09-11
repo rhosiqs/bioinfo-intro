@@ -5,8 +5,10 @@ updated: 2026-09-11
 
 # Preface {.unnumbered}
 
-This handbook explains common bioinformatics tasks for plant wet-lab researchers.
-All examples use toy data; no real sequencing data is distributed with this book.
+This handbook is mainly for the beginner of the bioinformatics. It is better to understand the basic concepts of the computer and molecular biology before reading this book.
 
-This handbook is mainly for the beginner of the bioinformatics. It is better to understand the basic concepts of the computer and molecular biology to read this book.
+::: {.callout-warning}
+The grammarly of the content may have some mistakes.
+:::
 
+This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">

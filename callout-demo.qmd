@@ -1,0 +1,136 @@
+---
+title: "Quarto Callout 與標註語法範例"
+lang: zh-TW
+format:
+  html:
+    toc: true
+    number-sections: true
+---
+
+## 一、五種基礎 Callout
+
+Quarto 內建只有這 5 種類型，語法用 pandoc div `:::{.callout-類型}` 包住內容。
+
+::: {.callout-note}
+這是 `note`，用來補充一般資訊。
+:::
+
+::: {.callout-tip}
+這是 `tip`，用來給提示或小訣竅。
+:::
+
+::: {.callout-warning}
+這是 `warning`，提醒使用者要注意。
+:::
+
+::: {.callout-caution}
+這是 `caution`，比 warning 更強烈的警示。
+:::
+
+::: {.callout-important}
+這是 `important`，強調必須知道的重點。
+:::
+
+## 二、加上標題（第一行標題會變成 callout 的抬頭）
+
+只要在 div 內第一行用 `##` 開頭，這行文字就會變成 callout 的標題，
+而不是預設顯示類型名稱（Note / Tip...）。
+
+::: {.callout-tip}
+## 自訂標題：加速渲染的小技巧
+
+`render-on-save` 開啟後，存檔就會自動重新編譯，不用每次手動按 Render。
+:::
+
+## 三、可摺疊 Callout（collapse）
+
+`collapse="true"` 預設收合、`collapse="false"` 預設展開但仍可收合。
+不加 `collapse` 屬性則完全不可摺疊。
+
+::: {.callout-note collapse="true"}
+## 預設收合，點擊展開
+
+這段內容預設是藏起來的，使用者要點一下才會看到。
+:::
+
+::: {.callout-warning collapse="false"}
+## 預設展開，但仍可收合
+
+這段內容一開始就顯示，但使用者仍可以手動收合它。
+:::
+
+## 四、加上 ID，並做交叉引用（cross-reference）
+
+給 callout 一個以對應類型開頭的 ID（如 `#tip-` `#nte-` `#wrn-` `#imp-` `#cau-`），
+之後就能用 `@id` 在文章其他地方引用它。
+
+::: {#tip-render-save .callout-tip}
+## 開啟自動渲染
+
+在 YAML 中加入 `editor: render-on-save: true`，存檔即自動重新渲染。
+:::
+
+如前面 @tip-render-save 提到的技巧，可以省去手動按 Render 的麻煩。
+
+## 五、無類型的純樣式 Callout
+
+不指定任何類型，只用 `.callout` class，會得到一個沒有顏色分類、沒有 icon 的簡單方框。
+
+::: {.callout}
+## 練習
+
+這是最陽春的 callout，常用於「練習」「延伸閱讀」這類不需要特別警示色的區塊。
+:::
+
+## 六、標註語法：圖片標題（圖例）與交叉引用
+
+在圖片語法後加上 `{#fig-xxx}`，`fig-` 開頭的 ID 會被 Quarto 自動辨識為圖片，
+並在下方自動加上「圖 1：」這類編號說明文字（說明文字取自 `[]` 中的 alt text）。
+
+```markdown
+![範例圖片說明文字，此處會變成圖片標題](images/example.png){#fig-example}
+```
+
+參考語法：`如 @fig-example 所示`，渲染後會自動變成「如 圖 1 所示」，
+並在點擊時可以跳轉到該圖片（實際渲染需要有真的圖檔路徑，此檔案僅示範語法）。
+
+## 七、標註語法：表格標題與交叉引用
+
+表格標題寫在表格下方，用 `:` 開頭，並在最後加上 `{#tbl-xxx}` 當作 ID。
+
+| 類型      | 顏色 | 用途       |
+|-----------|------|------------|
+| note      | 藍色 | 一般資訊   |
+| tip       | 綠色 | 提示訣竅   |
+| warning   | 黃色 | 需要注意   |
+| caution   | 橘色 | 強烈警示   |
+| important | 紅色 | 必知重點   |
+
+: Quarto 五種基礎 Callout 對照表 {#tbl-callout-types}
+
+參考 @tbl-callout-types 可以快速對照每種 callout 的用途。
+
+## 八、進階：用 CSS 客製化 Callout 外觀（選用）
+
+若想像 Obsidian 一樣有更多自訂樣式，可以自己加 class 並搭配 CSS：
+
+```markdown
+:::{.callout-note .callout-gradient}
+這是套用了自訂 CSS class 的 callout，實際顏色/動畫需自行在 custom.scss 中定義。
+:::
+```
+
+```scss
+/* custom.scss */
+div.callout-gradient {
+  background: linear-gradient(90deg, #a1c4fd, #c2e9fb);
+}
+```
+
+需在 YAML 中加入：
+
+```yaml
+format:
+  html:
+    css: custom.scss
+```

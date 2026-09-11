@@ -5,5 +5,10 @@
 __pycache__/
 /_translation-batch.md
 
-# Claude Code 的本機個人設定（輸出風格等），不需進版控
+# When preiview/remder single .qmd file, Quarto will generate some cache file
+*.html
+*_files/
+*_cache/
+
+# Claude Code local setting
 .claude/settings.local.json
