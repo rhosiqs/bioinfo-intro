@@ -138,3 +138,6 @@ index.html          依瀏覽器語言導向 en-US/ 或 zh-TW/
 
 - 中文 PDF 章節頁首顯示「章 1.」而非「第 1 章」；PDF 內章節引用會多一個句點。HTML 不受影響。
 - 建置時的 `Could not load translations for zh-TW` 是 Pandoc 警告，不影響輸出。
+
+
+This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
