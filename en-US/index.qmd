@@ -13,4 +13,17 @@ This handbook is mainly for the beginner of the bioinformatics. It is better to 
 
 This book is still developing, maybe some of the contents will be wrong. Use with caution.
 
+## What this book main for {#sec-what-this-book-main-for}
+
+This is the very basic introduction for the beginners, if you are not very familiar with the computer science, I think this will help you to start more easier. 
+
+## About the author
+The author, me, is just the student who start for learning bioinformatics, with the molecular wet-lab backgroud. During learning, I found that there is hardly the whole free source for the biginner to learn the very basic bioinfo, such as how to operate the Linux/Unix system, how to setup the remote connection in one book. 
+
+Therefore, I want to write the book, which can make the people who have no basic but need to use bioinformatic, can get started quickly.
+
+::: {.callout-note}
+I am the Traditional Chinese native speaker, while want to use English to write due that the international people can understand easily, so maybe some grammar may have some mistake.
+:::
+
 This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
