@@ -8,7 +8,7 @@
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
-      "args": ["tools/new_page.py", "${input:pageTitle}", "--part=${input:partId}"],
+      "args": ["tools/new_page.py", "${input:pageTitle}", "--part=${input:partId}", "--level=${input:level}"],
       "problemMatcher": []
     },
     {
@@ -88,6 +88,13 @@
       "type": "promptString",
       "description": "屬於 book.yml 裡的哪個 part id，也就是放進哪個資料夾（留空 = 不分區）",
       "default": "basics"
+    },
+    {
+      "id": "level",
+      "type": "pickString",
+      "description": "章節程度（之後可在 front matter 的 level: 修改）",
+      "options": ["basic", "beginner", "intermediate", "advanced"],
+      "default": "basic"
     }
   ]
 }

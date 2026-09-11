@@ -1,10 +1,11 @@
 ---
 order: 10
+level: basic
 created: 2026-09-11
 updated: 2026-09-12
 ---
 
-# System {#sec-01-system}
+# System {#sec-system}
 
 For the personal computers, mainly is using Windows or MacOS. While in the bioinformatics field, the main operation system is **Linux**.
 

@@ -127,7 +127,7 @@ class LiveReloadHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def watched_files() -> list[Path]:
-    files = [bu.BOOK_YML, ROOT / "index.html", ROOT / "tools" / "page-dates.lua"]
+    files = [bu.BOOK_YML, ROOT / "index.html", ROOT / "tools" / "page-meta.lua"]
     shared = ROOT / "_shared"
     if shared.exists():
         files += [p for p in shared.rglob("*") if p.is_file()]

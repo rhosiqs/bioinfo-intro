@@ -1,10 +1,11 @@
 ---
+level: basic
 created: 2026-09-11
-updated: 2026-09-11
+updated: 2026-09-12
 translation-of: PLACEHOLDER
 ---
 
-# System {#sec-01-system}
+# System {#sec-system}
 
 Write the chapter here.
 

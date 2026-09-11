@@ -4,7 +4,7 @@ Create a new English page, then let sync.py do the rest (zh-TW stub, chapter
 lists, dates). This is the only step that should need a decision from you.
 
   python tools/new_page.py "Command-line basics" --part basics   # -> en-US/basics/command-line-basics.qmd
-  python tools/new_page.py "Genome assembly" --part workflows --slug assembly
+  python tools/new_page.py "Genome assembly" --part workflows --slug assembly --level advanced
   python tools/new_page.py "About this book"                     # -> en-US/about-this-book.qmd (no part)
 
 The part is the folder: each part id from book.yml is a folder in en-US/.
@@ -55,6 +55,8 @@ def main() -> int:
     ap.add_argument("--part", default=None,
                     help="part id from book.yml = the folder the page goes in (omit for a top-level page)")
     ap.add_argument("--slug", default=None, help="file name without .qmd (default: from the title)")
+    ap.add_argument("--level", default=bu.DEFAULT_LEVEL, choices=bu.LEVELS,
+                    help=f"chapter level (default: {bu.DEFAULT_LEVEL})")
     args = ap.parse_args()
 
     part = args.part or None
@@ -68,7 +70,7 @@ def main() -> int:
         raise SystemExit(f"ERROR  {bu.EN.name}/{rel.as_posix()} already exists")
 
     body = TEMPLATE.format(title=args.title, slug=slug)
-    bu.write(dst, bu.set_fm(body, {"order": next_order(part)}))
+    bu.write(dst, bu.set_fm(body, {"order": next_order(part), "level": args.level}))
     print(f"created {bu.EN.name}/{rel.as_posix()}")
 
     subprocess.run([sys.executable, str(Path(__file__).with_name("sync.py"))], cwd=bu.ROOT, check=True)

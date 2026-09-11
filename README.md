@@ -21,6 +21,7 @@ python3 tools/new_page.py "Command-line basics" --part basics
 ```markdown
 ---
 order: 30         # 同一分區內的順序，建議留 10 的間隔
+level: basic      # 章節程度：basic / beginner / intermediate / advanced
 created: 2026-09-11
 updated: 2026-09-11
 ---
@@ -33,6 +34,18 @@ updated: 2026-09-11
   直接放在 `en-US/` 底下的頁面不屬於任何分區，排在前言後面。
 - 第一行是 `# 標題 {#sec-xxx}`，ID 用英文，中文版必須完全相同。
 - `created` / `updated` 由工具維護，不要手改。
+- `level:` 由你設定（只用於章節，前言不用），標題下方會顯示對應的標籤；
+  中文頁會自動同步，改程度也不會讓已審閱的翻譯變成 OUTDATED：
+
+  | `level:` | English | 中文 |
+  |---|---|---|
+  | `basic` | Basic | 基礎 |
+  | `beginner` | Beginner | 初學者 |
+  | `intermediate` | Intermediate | 進階 |
+  | `advanced` | Advanced | 高階 |
+
+  新增頁面時預設為 `basic`（task 會讓你選，或用 `--level advanced`）。
+  漏寫或拼錯時 `sync.py` 會提出警告。
 - 檔名不加數字前綴：順序由 `order:` 決定，所以調整順序不會改到網址。
 - 編號：章號是全書連續的（1, 2, 3…，這是 Quarto 的規則），分區則自動以
   「Part I / 第一部分」編號，順序照 `book.yml`。分區標題不要自己加數字。
@@ -127,7 +140,7 @@ sudo apt-get install fonts-noto-cjk
 ## 頁面日期
 
 每頁標題下方顯示建立日期與最後修改日期（中文頁再加譯文審閱日期），由
-`tools/page-dates.lua` 渲染。日期存在 front matter，由 `sync.py` 維護：
+`tools/page-meta.lua` 渲染。日期存在 front matter，由 `sync.py` 維護：
 有 git 時取自 commit 紀錄（CI 已設 `fetch-depth: 0`），否則取檔案修改時間。
 `created:` 寫入後不再變動。
 
@@ -139,7 +152,7 @@ CLAUDE.md           給 AI agent 的專案規則
 en-US/              英文版（唯一手寫處）— 獨立的 Quarto book 專案
 zh-TW/              中文版 — 檔案由 sync.py 建立，內容由你審核
 _shared/            語言切換 script、日期列樣式
-tools/              new_page / sync / check_translations / build / page-dates.lua
+tools/              new_page / sync / check_translations / build / page-meta.lua
                     translation-prompt.md（AI 提示詞與術語表，單一事實來源）
 .claude/skills/translate/   /translate 批次翻譯 skill
 index.html          依瀏覽器語言導向 en-US/ 或 zh-TW/
@@ -149,6 +162,8 @@ index.html          依瀏覽器語言導向 en-US/ 或 zh-TW/
 
 - 中文 PDF 章節頁首顯示「章 1.」而非「第 1 章」；PDF 內章節引用會多一個句點。HTML 不受影響。
 - 建置時的 `Could not load translations for zh-TW` 是 Pandoc 警告，不影響輸出。
+- PDF 會把所有章節合併成一份文件，各章的 front matter 在合併時被捨棄，所以日期與程度標籤
+  在 PDF 裡只有前言那一行會出現；HTML 每一章都有。
 
 
 This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">

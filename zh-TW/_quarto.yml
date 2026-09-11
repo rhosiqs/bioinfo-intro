@@ -31,7 +31,7 @@ book:
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).
 filters:
-  - ../tools/page-dates.lua
+  - ../tools/page-meta.lua
 
 format:
   html:

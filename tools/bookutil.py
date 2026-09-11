@@ -32,7 +32,13 @@ BOOK_YML = ROOT / "book.yml"
 SHARED_IMAGES = ROOT / "_shared" / "images"
 
 # Front matter keys we manage, in the order they are written back.
-FM_ORDER = ["order", "created", "updated", "translation-of", "reviewed"]
+FM_ORDER = ["order", "level", "created", "updated", "translation-of", "reviewed"]
+
+# Chapter levels, easiest first. The author sets `level:` on each English
+# chapter; sync.py copies it to the Chinese page. Display labels (en / zh-TW)
+# live in tools/page-meta.lua - keep both lists in step.
+LEVELS = ("basic", "beginner", "intermediate", "advanced")
+DEFAULT_LEVEL = "basic"
 
 TODAY = datetime.date.today().isoformat()
 

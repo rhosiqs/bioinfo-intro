@@ -17,8 +17,12 @@ HTML + PDF and deploy to GitHub Pages.
   reviewed for the user - only they approve translations.
 - A page's part is its folder (`en-US/<part-id>/page.qmd`, ids declared in
   `book.yml`); pages directly in `en-US/` have no part. Its front matter holds
-  `order` (authored) and `created`, `updated`, `translation-of`, `reviewed`
-  (machine-managed). There is no `part:` key.
+  `order`, `level` (authored, English only) and `created`, `updated`,
+  `translation-of`, `reviewed` (machine-managed; `level` is mirrored to zh-TW
+  by `sync.py`). There is no `part:` key.
+- `level:` is one of `basic` / `beginner` / `intermediate` / `advanced`, on
+  chapters only (never `index.qmd`). Ids live in `bookutil.LEVELS`, display
+  labels in `tools/page-meta.lua` - change both together.
 - Chapter numbers are Quarto's book-wide ones. Parts are numbered "Part I" /
   "第一部分" by `_shared/part-numbers.html` (HTML) and the PDF template, so
   part titles in `book.yml` carry no number.

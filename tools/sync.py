@@ -7,7 +7,8 @@ For every en-US/**/*.qmd it will:
      `git init`), which is what the page-dates filter renders on the page;
   2. create the matching zh-TW/**/*.qmd if it is missing (a copy of the English
      body, marked UNTRANSLATED so the site shows a notice);
-  3. mirror the dates onto the zh-TW page;
+  3. mirror the dates and the chapter `level:` onto the zh-TW page (warning
+     about chapters without a valid level; index.qmd never gets one);
   4. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml,
      each page's folder (the folder name is its part id) and `order:` front
      matter. Part titles stay plain: the PDF template numbers parts itself
@@ -167,23 +168,35 @@ def main() -> int:
         fm.update({"created": created, "updated": updated})
         pages[rel] = fm
 
+        # --- chapter level (authored on the English page only) ----------------
+        level = fm.get("level") or None
+        if rel.as_posix() == "index.qmd":
+            if level:
+                warnings.append("index.qmd has a `level:` key - levels are for chapters only, it is ignored.")
+            level = None
+        elif level is None:
+            warnings.append(f"{bu.EN.name}/{rel.as_posix()} has no `level:` "
+                            f"(one of: {', '.join(bu.LEVELS)}).")
+        elif level not in bu.LEVELS:
+            warnings.append(f"{bu.EN.name}/{rel.as_posix()} has unknown level '{level}' "
+                            f"(one of: {', '.join(bu.LEVELS)}); not shown.")
+            level = None
+        mirrored = {"level": level, "created": created, "updated": updated}
+
         # --- zh-TW counterpart -------------------------------------------------
         dst = bu.ZH / rel
         if not dst.exists():
-            stub = bu.set_fm(
-                bu.body_of(new_text),
-                {"translation-of": STUB_NOTE, "created": created, "updated": updated},
-            )
+            stub = bu.set_fm(bu.body_of(new_text), {"translation-of": STUB_NOTE, **mirrored})
             if not args.check:
                 bu.write(dst, stub)
             note(f"created {bu.ZH.name}/{rel.as_posix()} (untranslated stub)")
         else:
             zt = bu.read(dst)
-            nzt = bu.set_fm(zt, {"created": created, "updated": updated})
+            nzt = bu.set_fm(zt, mirrored)
             if nzt != zt:
                 if not args.check:
                     bu.write(dst, nzt, keep_mtime=True)
-                note(f"dates   {bu.ZH.name}/{rel.as_posix()}")
+                note(f"meta    {bu.ZH.name}/{rel.as_posix()}")
 
     # --- orphaned translations -------------------------------------------------
     for p in sorted(bu.ZH.rglob("*.qmd")):
