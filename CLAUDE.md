@@ -9,6 +9,10 @@ HTML + PDF and deploy to GitHub Pages.
 - **Only `en-US/**/*.qmd` is written by hand.** The zh-TW page, both chapter
   lists in `*/_quarto.yml`, and the page dates are derived by `tools/sync.py`.
   Never hand-edit a `chapters:` block or a `created:` / `updated:` key.
+- **Images only ever go in `_shared/images/`.** `tools/sync.py` mirrors them
+  into real file copies at `en-US/images/` and `zh-TW/images/` (not symlinks -
+  Typst's PDF renderer refuses any path, symlinked or not, that resolves
+  outside its project directory). Never hand-edit those two copies.
 - **Never edit `en-US/` when translating**, and never mark a translation as
   reviewed for the user - only they approve translations.
 - A page's front matter holds `part`, `order` (authored) and `created`,

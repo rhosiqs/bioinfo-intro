@@ -32,7 +32,10 @@ updated: 2026-09-11
 - 第一行是 `# 標題 {#sec-xxx}`，ID 用英文，中文版必須完全相同。
 - `created` / `updated` 由工具維護，不要手改。
 - 檔名不加數字前綴：順序由 `order:` 決定，所以調整順序不會改到網址。
-- 圖片放 `en-US/images/`，用 `![說明](../images/xxx.png){#fig-xxx}` 引用。
+- 圖片只放共用的 `_shared/images/`，`en-US/images/` 與 `zh-TW/images/` 是 `tools/sync.py`
+  自動鏡射出來的實體複本（Typst PDF 不能引用專案根目錄外的檔案，連 symlink
+  也會被拒絕，所以用複本而非共用路徑或連結）——不要手動編輯這兩個複本，引用方式
+  不變：`![說明](../images/xxx.png){#fig-xxx}`。
 - 新增分區時才需要改根目錄的 `book.yml`（id + 兩種語言的標題）。
 
 ## 翻譯與審核

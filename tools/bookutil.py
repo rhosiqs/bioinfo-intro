@@ -28,6 +28,7 @@ EN = ROOT / "en-US"
 ZH = ROOT / "zh-TW"
 LANGS = (EN.name, ZH.name)
 BOOK_YML = ROOT / "book.yml"
+SHARED_IMAGES = ROOT / "_shared" / "images"
 
 # Front matter keys we manage, in the order they are written back.
 FM_ORDER = ["part", "order", "created", "updated", "translation-of", "reviewed"]

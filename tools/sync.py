@@ -10,8 +10,14 @@ For every en-US/**/*.qmd it will:
   3. mirror the dates onto the zh-TW page;
   4. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml plus
      each page's `part:` / `order:` front matter.
+  5. mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
+     file copies (Typst's PDF renderer can't reach outside its project
+     directory, so images can't just live in `_shared/` and be referenced
+     from there - and can't be symlinked either, since Typst resolves the
+     symlink target and rejects it the same way).
 
-So adding a page means adding one file. Nothing else has to be kept in step.
+So adding a page means adding one file, and adding an image means dropping it
+into `_shared/images/` - nothing else has to be kept in step.
 
 Usage:
   python tools/sync.py            # do it (safe to run any time; idempotent)
@@ -94,6 +100,34 @@ def replace_chapters_block(text: str, block: str) -> str:
     return "\n".join(lines[:start] + block.split("\n") + lines[end:])
 
 
+def sync_images(check: bool) -> list[str]:
+    """Mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
+    files (Typst's PDF sandbox refuses paths - and so refuses symlinks that
+    resolve outside the project - so each edition needs its own copy)."""
+    changes: list[str] = []
+    src_files = {
+        p.relative_to(bu.SHARED_IMAGES): p
+        for p in bu.SHARED_IMAGES.rglob("*") if p.is_file()
+    } if bu.SHARED_IMAGES.exists() else {}
+
+    for lang in bu.LANGS:
+        dest_dir = bu.ROOT / lang / "images"
+        for rel, src in src_files.items():
+            dst = dest_dir / rel
+            if not dst.exists() or dst.read_bytes() != src.read_bytes():
+                if not check:
+                    dst.parent.mkdir(parents=True, exist_ok=True)
+                    dst.write_bytes(src.read_bytes())
+                changes.append(f"image   {lang}/images/{rel.as_posix()}")
+        if dest_dir.exists():
+            for p in dest_dir.rglob("*"):
+                if p.is_file() and p.relative_to(dest_dir) not in src_files:
+                    if not check:
+                        p.unlink()
+                    changes.append(f"removed {lang}/images/{p.relative_to(dest_dir).as_posix()} (no longer in _shared/images)")
+    return changes
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="report only, change nothing")
@@ -155,6 +189,9 @@ def main() -> int:
             note(f"deleted {bu.ZH.name}/{rel.as_posix()} (no English source)")
         else:
             warnings.append(f"{bu.ZH.name}/{rel.as_posix()} has no English source (run with --prune to delete)")
+
+    # --- shared images -----------------------------------------------------
+    changes += sync_images(args.check)
 
     # --- chapter lists ---------------------------------------------------------
     tree, tree_warnings = chapter_tree(pages)
