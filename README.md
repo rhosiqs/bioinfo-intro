@@ -4,7 +4,7 @@
 部署在 GitHub Pages，側欄的翻譯圖示可在兩語言的「同一頁」之間切換。
 
 **你只做兩件事：寫英文頁、審核中文翻譯。**
-中文對應檔、兩份 `_quarto.yml` 的章節清單、頁面日期都由 `tools/sync.py` 從英文頁推導，
+中文對應檔、兩份 `_quarto.yml` 的章節清單都由 `tools/sync.py` 從英文頁推導，
 而 `sync.py` 會在新增頁面與每次建置時自動執行。
 
 ## 新增一頁
@@ -16,21 +16,18 @@ python3 tools/new_page.py "Command-line basics" --part basics
 ```
 
 它會建立 `en-US/chapters/command-line-basics.qmd`，並同時完成：建立中文存根、
-把這一頁加進兩份章節清單、寫入日期。你只要開始寫內容。
+把這一頁加進兩份章節清單。你只要開始寫內容。
 
 ```markdown
 ---
 part: basics      # book.yml 裡的分區 id
 order: 30         # 同一分區內的順序，建議留 10 的間隔
-created: 2026-09-11
-updated: 2026-09-11
 ---
 
 # Command-line basics {#sec-command-line-basics}
 ```
 
 - 第一行是 `# 標題 {#sec-xxx}`，ID 用英文，中文版必須完全相同。
-- `created` / `updated` 由工具維護，不要手改。
 - 檔名不加數字前綴：順序由 `order:` 決定，所以調整順序不會改到網址。
 - 圖片只放共用的 `_shared/images/`，`en-US/images/` 與 `zh-TW/images/` 是 `tools/sync.py`
   自動鏡射出來的實體複本（Typst PDF 不能引用專案根目錄外的檔案，連 symlink
@@ -62,7 +59,7 @@ updated: 2026-09-11
 打開任一 `.qmd`，按編輯器右上角 **Preview** 或 **Ctrl/Cmd+Shift+K**。存檔就自動重新整理，速度最快。
 
 限制：只 render 那一個檔案，不會經過 `sync.py`，所以側欄的語言切換鈕無效、
-新增的頁面不會出現在側欄、剛改完的「最後更新」日期還是舊的。這些都要整站建置才會更新。
+新增的頁面不會出現在側欄。這些都要整站建置才會更新。
 
 ### 整站預覽（要看語言切換、側欄順序、PDF 時用）
 
@@ -110,15 +107,14 @@ sudo apt-get install fonts-noto-cjk
 | ERROR | 程式碼區塊／標籤／圖片路徑／章節清單不一致 | **建置失敗** |
 
 狀態記在中文檔的 `translation-of`，它是**英文內文**的雜湊（不含 front matter），
-所以更新日期或調整 `order:` 不會讓已審閱的翻譯變成 OUTDATED。
+所以調整 `part:` 或 `order:` 不會讓已審閱的翻譯變成 OUTDATED。
 `--strict` 可讓非 OK 狀態也視為失敗（正式發布前使用）。
 
-## 頁面日期
+## 譯文審閱日期
 
-每頁標題下方顯示建立日期與最後修改日期（中文頁再加譯文審閱日期），由
-`tools/page-dates.lua` 渲染。日期存在 front matter，由 `sync.py` 維護：
-有 git 時取自 commit 紀錄（CI 已設 `fetch-depth: 0`），否則取檔案修改時間。
-`created:` 寫入後不再變動。
+已審閱的中文頁在標題下方顯示「譯文審閱」日期，由 `tools/page-dates.lua` 渲染，
+取自 front matter 的 `reviewed:`（蓋章時由 `check_translations.py --stamp` 寫入）。
+頁面不顯示建立日期或最後修改日期。
 
 ## 結構
 
@@ -127,7 +123,7 @@ book.yml            分區定義：id + 兩種語言的標題
 CLAUDE.md           給 AI agent 的專案規則
 en-US/              英文版（唯一手寫處）— 獨立的 Quarto book 專案
 zh-TW/              中文版 — 檔案由 sync.py 建立，內容由你審核
-_shared/            語言切換 script、日期列樣式
+_shared/            語言切換 script、審閱日期列樣式
 tools/              new_page / sync / check_translations / build / page-dates.lua
                     translation-prompt.md（AI 提示詞與術語表，單一事實來源）
 .claude/skills/translate/   /translate 批次翻譯 skill

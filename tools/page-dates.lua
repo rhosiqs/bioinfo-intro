@@ -1,18 +1,14 @@
 --[[
-  Render the per-page "created / last updated" line kept in the front matter by
-  tools/sync.py, just under the chapter title.
-
-  The dates are metadata, not prose, so they live outside the page body: that
-  keeps them out of the translation hash and means a date refresh never marks a
-  reviewed Chinese page as outdated. The Chinese page additionally shows when
-  its translation was last reviewed by a human.
+  Render the "translation reviewed" date, just under the chapter title, on
+  pages whose front matter carries a `reviewed:` key (written by
+  tools/check_translations.py --stamp, so only reviewed Chinese pages show it).
 ]]
 
 local stringify = pandoc.utils.stringify
 
 local LABELS = {
-  en      = { created = "Created",  updated = "Last updated", reviewed = "Translation reviewed" },
-  ["zh-TW"] = { created = "建立於", updated = "最後更新",     reviewed = "譯文審閱" },
+  en      = { reviewed = "Translation reviewed" },
+  ["zh-TW"] = { reviewed = "譯文審閱" },
 }
 
 local function value(meta, key)
@@ -30,7 +26,7 @@ function Pandoc(doc)
   local labels = LABELS[lang] or LABELS[lang:match("^[^-]+") or "en"] or LABELS.en
 
   local parts = {}
-  for _, key in ipairs({ "created", "updated", "reviewed" }) do
+  for _, key in ipairs({ "reviewed" }) do
     local v = value(meta, key)
     if v then table.insert(parts, labels[key] .. " " .. v) end
   end

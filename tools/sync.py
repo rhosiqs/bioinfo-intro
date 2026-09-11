@@ -3,14 +3,11 @@
 Derive everything that is not the English prose from the English pages.
 
 For every en-US/**/*.qmd it will:
-  1. refresh `created:` / `updated:` in the front matter (git dates, mtime before
-     `git init`), which is what the page-dates filter renders on the page;
-  2. create the matching zh-TW/**/*.qmd if it is missing (a copy of the English
+  1. create the matching zh-TW/**/*.qmd if it is missing (a copy of the English
      body, marked UNTRANSLATED so the site shows a notice);
-  3. mirror the dates onto the zh-TW page;
-  4. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml plus
+  2. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml plus
      each page's `part:` / `order:` front matter.
-  5. mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
+  3. mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
      file copies (Typst's PDF renderer can't reach outside its project
      directory, so images can't just live in `_shared/` and be referenced
      from there - and can't be symlinked either, since Typst resolves the
@@ -144,38 +141,16 @@ def main() -> int:
     pages: dict[Path, dict[str, str]] = {}
 
     for rel in bu.en_pages():
-        src = bu.EN / rel
-        text = bu.read(src)
-        fm = bu.get_fm(text)
-        created = bu.created_date(src, fm.get("created"))
-        updated = bu.modified_date(src, fm.get("updated"))
-        if updated < created:
-            updated = created
-        new_text = bu.set_fm(text, {"created": created, "updated": updated})
-        if new_text != text:
-            if not args.check:
-                bu.write(src, new_text, keep_mtime=True)
-            note(f"dates   {bu.EN.name}/{rel.as_posix()} (created {created}, updated {updated})")
-        fm.update({"created": created, "updated": updated})
-        pages[rel] = fm
+        text = bu.read(bu.EN / rel)
+        pages[rel] = bu.get_fm(text)
 
         # --- zh-TW counterpart -------------------------------------------------
         dst = bu.ZH / rel
         if not dst.exists():
-            stub = bu.set_fm(
-                bu.body_of(new_text),
-                {"translation-of": STUB_NOTE, "created": created, "updated": updated},
-            )
+            stub = bu.set_fm(bu.body_of(text), {"translation-of": STUB_NOTE})
             if not args.check:
                 bu.write(dst, stub)
             note(f"created {bu.ZH.name}/{rel.as_posix()} (untranslated stub)")
-        else:
-            zt = bu.read(dst)
-            nzt = bu.set_fm(zt, {"created": created, "updated": updated})
-            if nzt != zt:
-                if not args.check:
-                    bu.write(dst, nzt, keep_mtime=True)
-                note(f"dates   {bu.ZH.name}/{rel.as_posix()}")
 
     # --- orphaned translations -------------------------------------------------
     for p in sorted(bu.ZH.rglob("*.qmd")):

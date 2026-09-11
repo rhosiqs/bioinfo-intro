@@ -1,6 +1,4 @@
 ---
-created: 2026-09-10
-updated: 2026-09-11
 translation-of: 11a93d7edc2b
 reviewed: 2026-09-11
 ---
