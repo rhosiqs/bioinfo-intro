@@ -30,7 +30,7 @@ python3 tools/new_page.py "Title" --part basics   # add a page (does everything 
 python3 tools/sync.py                             # derive zh-TW stubs, chapter lists, dates
 python3 tools/check_translations.py               # status; --pending, --strict, --export-batch
 python3 tools/check_translations.py --stamp FILE   # author marks a translation reviewed
-python3 tools/build.py --serve                     # full build + local site at :8000
+python3 tools/build.py --serve                     # full build + local site at :8000, live reload on save
 ```
 
 Use the `translate` skill for batch translation. Parts are declared in `book.yml`.

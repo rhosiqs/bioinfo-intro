@@ -70,9 +70,16 @@ updated: 2026-09-11
 `http://localhost:8000`。用 WSL 或遠端連線時，Positron 會自動轉發 8000 port，
 右下角會跳通知讓你直接點開。停止：在該終端機按 Ctrl+C。
 
+伺服器啟動後會持續監看檔案，**存檔即自動更新**：先跑 `sync.py`，再只重新 render
+改到的那一頁（HTML，約 1–2 秒），瀏覽器分頁自動重新整理。新增／刪除頁面、改
+`order:`、`book.yml` 或 `_shared/` 時，會重新 render 整個語言版的 HTML（側欄要跟著變）。
+PDF 只在一開始的完整建置產生，想更新 PDF 就重新按一次 Ctrl+Shift+B。
+監看期間 render 失敗或翻譯檢查出錯只會印在終端機，伺服器不會停，修好再存檔即可。
+
 ```bash
-python3 tools/build.py --serve      # 等同上面那個 task
-python3 tools/build.py              # 只建置不啟動伺服器，輸出在 _site/
+python3 tools/build.py --serve              # 等同上面那個 task（含即時更新）
+python3 tools/build.py --serve --no-watch   # 只提供一次性建置結果，不監看
+python3 tools/build.py                      # 只建置不啟動伺服器，輸出在 _site/
 ```
 
 它會依序做：`sync.py` → 翻譯檢查 → render 兩種語言的 HTML 與 PDF → 組成 `_site/`。

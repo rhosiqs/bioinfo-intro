@@ -67,6 +67,7 @@
     },
     {
       "label": "Build both editions and serve",
+      "detail": "整站建置後啟動 localhost:8000；之後存檔會自動重新 render 該頁並重新整理瀏覽器",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },

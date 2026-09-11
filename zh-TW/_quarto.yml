@@ -24,6 +24,9 @@ book:
       chapters:
         - chapters/01-fastq.qmd
         - chapters/02-blast.qmd
+    - part: "1. Environment"
+      chapters:
+        - chapters/01-system.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).

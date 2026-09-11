@@ -19,7 +19,9 @@ Hard rules:
 4. Inline code (`like_this`) stays as is.
 5. Use Taiwan terminology, not Mainland China terminology (see glossary). Never output Simplified characters.
 6. When referring to a chapter, write 第 -@sec-xxx 章 (number only), not @sec-xxx.
-7. Output only the translated body, no commentary.
+7. In the `## References {.unnumbered}` section, translate only the heading (參考資料);
+   copy every reference entry (authors, titles, journals, DOIs) unchanged.
+8. Output only the translated body, no commentary.
 
 Glossary (English → zh-TW; ✗ = do not use):
 - sequencing → 定序（✗ 测序/測序）

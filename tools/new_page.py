@@ -25,6 +25,10 @@ import bookutil as bu  # noqa: E402
 TEMPLATE = """# {title} {{#sec-{slug}}}
 
 Write the chapter here.
+
+## References {{.unnumbered}}
+
+- Author A, Author B. (Year). Title. *Journal*, Volume(Issue), Pages. <https://doi.org/...>
 """
 
 
