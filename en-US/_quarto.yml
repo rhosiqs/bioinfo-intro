@@ -20,7 +20,6 @@ book:
         href: ../zh-TW/index.html
   chapters:
     - index.qmd
-    - chapters/what-this-book-main-for.qmd
     - part: "Basics"
       chapters:
         - chapters/01-fastq.qmd

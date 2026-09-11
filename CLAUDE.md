@@ -18,7 +18,8 @@ HTML + PDF and deploy to GitHub Pages.
 - A page's front matter holds `part`, `order` (authored) and `created`,
   `updated`, `translation-of`, `reviewed` (machine-managed).
 - Code blocks must be byte-identical across both editions; `{#sec-...}` labels
-  must match. These are enforced and break the build.
+  must match. These are enforced and break the build (only warnings on
+  OUTDATED pages, whose translation predates the current English).
 - Untranslated pages are fine: they deploy with a notice. Translation progress
   never blocks publishing.
 

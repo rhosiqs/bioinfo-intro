@@ -12,7 +12,9 @@ part/order, is deliberately excluded - housekeeping never invalidates a review):
   UNTRANSLATED  still the English text (a stub created by sync.py)
   MISSING       no zh-TW file at all (sync.py normally prevents this)
 
-Structural checks (always errors, because they break the book or mislead readers):
+Structural checks (errors, because they break the book or mislead readers -
+except on OUTDATED pages, where a stale translation is expected to differ and
+they are only warnings, so translation progress never blocks publishing):
   - fenced code blocks must be byte-identical and in the same order
   - cross-reference labels ({#sec-...}, {#fig-...}, ...) must be the same set
   - image paths must be the same list
@@ -235,9 +237,13 @@ def main() -> int:
         errs = structural_errors(rel)
         if st != "OK" or errs:
             print(f"{st:<13}{rel.as_posix()}")
+        # An OUTDATED page is a translation of an older English text, so its
+        # code / labels / images are expected to lag behind. It still ships
+        # (with a notice); the mismatch is fixed when the page is re-translated.
+        fatal = st != "OUTDATED"
         for e in errs:
-            print(f"  ERROR  {e}")
-            failed = True
+            print(f"  {'ERROR' if fatal else 'WARN '}  {e}")
+            failed = failed or fatal
         if args.strict and st != "OK":
             failed = True
         if args.annotate and st in MESSAGES:
