@@ -8,7 +8,7 @@ book:
   title: "植物生物資訊學入門"
   author: "Rhosiqs"
   date: last-modified
-  repo-url: https://github.com/rhosiqs/plant-bioinfo-intro-book
+  repo-url: https://github.com/rhosiqs/bioinfo-intro
   repo-subdir: zh-TW
   repo-actions: [edit, issue]
   output-file: handbook-zh-TW

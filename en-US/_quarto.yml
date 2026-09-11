@@ -8,7 +8,7 @@ book:
   title: "Introduction to Plant Bioinformatics"
   author: "Rhosiqs"
   date: last-modified
-  repo-url: https://github.com/rhosiqs/plant-bioinfo-intro-book
+  repo-url: https://github.com/rhosiqs/bioinfo-intro
   repo-subdir: en-US
   repo-actions: [edit, issue]
   output-file: handbook-en
