@@ -8,7 +8,7 @@
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
-      "args": ["tools/new_page.py", "${input:pageTitle}", "--part", "${input:partId}"],
+      "args": ["tools/new_page.py", "${input:pageTitle}", "--part=${input:partId}"],
       "problemMatcher": []
     },
     {

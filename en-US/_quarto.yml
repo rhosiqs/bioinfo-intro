@@ -20,12 +20,14 @@ book:
         href: ../zh-TW/index.html
   chapters:
     - index.qmd
+    - chapters/what-this-book-main-for.qmd
     - part: "Basics"
       chapters:
         - chapters/01-fastq.qmd
         - chapters/02-blast.qmd
 
-# Renders the "translation reviewed" date under the title of reviewed pages
+# Renders the per-page created / last-updated line (dates come from the
+# front matter, which tools/sync.py keeps up to date).
 filters:
   - ../tools/page-dates.lua
 

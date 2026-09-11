@@ -1,6 +1,8 @@
 ---
 part: basics
 order: 10
+created: 2026-09-11
+updated: 2026-09-11
 ---
 
 # Reading FASTQ files {#sec-fastq}

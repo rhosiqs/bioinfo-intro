@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Create a new English page, then let sync.py do the rest (zh-TW stub, chapter
-lists). This is the only step that should need a decision from you.
+lists, dates). This is the only step that should need a decision from you.
 
   python tools/new_page.py "Command-line basics"
   python tools/new_page.py "Command-line basics" --part basics
@@ -71,8 +71,8 @@ def main() -> int:
     print(f"created {bu.EN.name}/{rel.as_posix()}")
 
     subprocess.run([sys.executable, str(Path(__file__).with_name("sync.py"))], cwd=bu.ROOT, check=True)
-    print(f"\nNow write {bu.EN.name}/{rel.as_posix()}. The Chinese page and both chapter lists")
-    print("are already taken care of; translate later with the translation tasks.")
+    print(f"\nNow write {bu.EN.name}/{rel.as_posix()}. The Chinese page, both chapter lists and the")
+    print("dates are already taken care of; translate later with the translation tasks.")
     return 0
 
 
