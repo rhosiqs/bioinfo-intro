@@ -5,11 +5,11 @@
 
   These are metadata, not prose, so they live outside the page body: that keeps
   them out of the translation hash and means a date refresh or a level change
-  never marks a reviewed Chinese page as outdated. The Chinese page additionally
+  never marks a reviewed English page as outdated. The English page additionally
   shows when its translation was last reviewed by a human.
 
-  `level:` is set by the author on English chapters only (never on index.qmd);
-  sync.py copies it to the Chinese page. The valid ids are bookutil.LEVELS -
+  `level:` is set by the author on Chinese chapters only (never on index.qmd);
+  sync.py copies it to the English page. The valid ids are bookutil.LEVELS -
   keep that list and LEVELS below in step.
 ]]
 

@@ -3,17 +3,17 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "New page (English)",
-      "detail": "建立英文新頁；中文檔、兩份章節清單、日期都會自動產生",
+      "label": "New page",
+      "detail": "建立中文新頁；兩份章節清單、日期（與開啟英文版後的英文檔）都會自動產生",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
-      "args": ["tools/new_page.py", "${input:pageTitle}", "--part=${input:partId}", "--level=${input:level}"],
+      "args": ["tools/new_page.py", "${input:pageTitle}", "--slug=${input:slug}", "--part=${input:partId}", "--level=${input:level}"],
       "problemMatcher": []
     },
     {
       "label": "Sync book",
-      "detail": "依英文頁重建中文檔存根、兩份章節清單與建立/修改日期",
+      "detail": "依中文頁重建兩份章節清單、建立/修改日期（英文版開啟後也建立英文檔存根）",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
@@ -22,7 +22,7 @@
     },
     {
       "label": "Translation: status",
-      "detail": "列出每一頁的翻譯狀態",
+      "detail": "列出每一頁英文翻譯的狀態（英文版未開啟時不做事）",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
@@ -31,7 +31,7 @@
     },
     {
       "label": "Translation: export AI batch",
-      "detail": "把所有待翻譯頁面匯出成一份 _translation-batch.md，貼給 AI",
+      "detail": "把所有待翻成英文的頁面匯出成一份 _translation-batch.md，貼給 AI",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
@@ -40,7 +40,7 @@
     },
     {
       "label": "Translation: mark current file as AI draft",
-      "detail": "標記目前這份中文檔為 AI 初稿（網站會顯示未審閱提示）",
+      "detail": "標記目前這份英文檔為 AI 初稿（網站會顯示未審閱提示）",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
@@ -49,7 +49,7 @@
     },
     {
       "label": "Translation: stamp current file as reviewed",
-      "detail": "我已審閱這份中文檔",
+      "detail": "我已審閱這份英文檔",
       "type": "shell",
       "command": "python3",
       "windows": { "command": "python" },
@@ -66,7 +66,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Build both editions and serve",
+      "label": "Build and serve",
       "detail": "整站建置後啟動 localhost:8000；之後存檔會自動重新 render 該頁並重新整理瀏覽器",
       "type": "shell",
       "command": "python3",
@@ -81,7 +81,12 @@
     {
       "id": "pageTitle",
       "type": "promptString",
-      "description": "新頁面的英文標題，例如 Command-line basics"
+      "description": "新頁面的標題，例如 命令列基礎"
+    },
+    {
+      "id": "slug",
+      "type": "promptString",
+      "description": "英文代稱，會成為檔名與網址，例如 command-line-basics"
     },
     {
       "id": "partId",

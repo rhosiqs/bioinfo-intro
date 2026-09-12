@@ -1,23 +1,26 @@
 #!/usr/bin/env python3
 """
-Derive everything that is not the English prose from the English pages.
+Derive everything that is not the Chinese prose from the Chinese pages.
 
-For every en-US/**/*.qmd it will:
+For every zh-TW/**/*.qmd it will:
   1. refresh `created:` / `updated:` in the front matter (git dates, mtime before
      `git init`), which is what the page-dates filter renders on the page;
-  2. create the matching zh-TW/**/*.qmd if it is missing (a copy of the English
-     body, marked UNTRANSLATED so the site shows a notice);
-  3. mirror the dates and the chapter `level:` onto the zh-TW page (warning
-     about chapters without a valid level; index.qmd never gets one);
-  4. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml,
+  2. warn about chapters without a valid `level:` (index.qmd never gets one);
+  3. rewrite the `chapters:` block of BOTH _quarto.yml files from book.yml,
      each page's folder (the folder name is its part id) and `order:` front
      matter. Part titles stay plain: the PDF template numbers parts itself
-     ("Part I") and _shared/part-numbers.html does the same in the HTML sidebar.
-  5. mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
-     file copies (Typst's PDF renderer can't reach outside its project
+     ("Part I") and _shared/part-numbers.html does the same in the HTML sidebar;
+  4. show the sidebar language switch only while the English edition is on;
+  5. mirror `_shared/images/` into the images/ folder of every built edition as
+     real file copies (Typst's PDF renderer can't reach outside its project
      directory, so images can't just live in `_shared/` and be referenced
      from there - and can't be symlinked either, since Typst resolves the
      symlink target and rejects it the same way).
+
+Once `english: true` is set in book.yml it also:
+  6. creates the matching en-US/**/*.qmd if it is missing (a copy of the Chinese
+     body, marked UNTRANSLATED so the site shows a notice);
+  7. mirrors the dates and the chapter `level:` onto the en-US page.
 
 So adding a page means adding one file, and adding an image means dropping it
 into `_shared/images/` - nothing else has to be kept in step.
@@ -25,7 +28,7 @@ into `_shared/images/` - nothing else has to be kept in step.
 Usage:
   python tools/sync.py            # do it (safe to run any time; idempotent)
   python tools/sync.py --check    # report what is out of date, change nothing, exit 1
-  python tools/sync.py --prune    # also delete zh-TW pages whose English source is gone
+  python tools/sync.py --prune    # also delete en-US pages whose Chinese source is gone
 """
 from __future__ import annotations
 
@@ -39,12 +42,19 @@ import bookutil as bu  # noqa: E402
 
 STUB_NOTE = "PLACEHOLDER"
 
+# The sidebar tool that opens the same page in the other edition
+# (_shared/lang-switch.html keeps the page and the #anchor).
+LANG_TOOL = {
+    bu.ZH.name: ("English", bu.EN.name),
+    bu.EN.name: ("中文版", bu.ZH.name),
+}
+
 
 def chapter_tree(pages: dict[Path, dict[str, str]]) -> tuple[list, list[str]]:
     """Return (ordered structure, warnings). Structure entries are either a page
     path string or a dict {"part": {...}, "pages": [...]}.
 
-    A page's part is its top-level folder (en-US/basics/x.qmd -> part `basics`);
+    A page's part is its top-level folder (zh-TW/basics/x.qmd -> part `basics`);
     pages directly in the edition directory are top-level chapters."""
     parts = bu.load_parts()
     known = {p["id"]: p for p in parts}
@@ -58,7 +68,7 @@ def chapter_tree(pages: dict[Path, dict[str, str]]) -> tuple[list, list[str]]:
             index.append(rel)
             continue
         if "part" in fm:
-            warnings.append(f"page {rel.as_posix()} has a `part:` key, which is ignored now - "
+            warnings.append(f"page {rel.as_posix()} has a `part:` key, which is ignored - "
                             f"the folder decides the part. Delete the line.")
         part = bu.part_of(rel)
         if not part:
@@ -67,10 +77,10 @@ def chapter_tree(pages: dict[Path, dict[str, str]]) -> tuple[list, list[str]]:
             buckets[part].append(rel)
         else:
             warnings.append(
-                f"folder {bu.EN.name}/{part}/ is not a part in book.yml. "
+                f"folder {bu.SRC.name}/{part}/ is not a part in book.yml. "
                 f"Add it there; using the folder name as its title for now."
             )
-            known.setdefault(part, {"id": part, "en-US": part, "zh-TW": part})
+            known.setdefault(part, {"id": part, bu.ZH.name: part, bu.EN.name: part})
             buckets.setdefault(part, []).append(rel)
 
     key = lambda rel: bu.sort_key(rel, pages[rel])  # noqa: E731
@@ -96,21 +106,43 @@ def render_chapters(tree: list, lang: str) -> str:
     return "\n".join(out)
 
 
-def replace_chapters_block(text: str, block: str) -> str:
+def render_sidebar(lang: str, english: bool) -> str:
+    """The `sidebar:` block with the language switch, or nothing while the
+    other edition isn't built."""
+    if not english:
+        return ""
+    text, other = LANG_TOOL[lang]
+    return "\n".join([
+        "  sidebar:",
+        "    tools:",
+        "      - icon: translate",
+        f'        text: "{text}"',
+        f"        href: ../{other}/index.html",
+    ])
+
+
+def replace_block(text: str, key: str, block: str, before: str | None = None) -> str:
+    """Replace the `  <key>:` block under `book:` with `block` ("" removes it).
+    A missing block is inserted just before the `  <before>:` key."""
     lines = text.split("\n")
-    start = next((i for i, l in enumerate(lines) if re.match(r"^  chapters:\s*$", l)), None)
+    start = next((i for i, l in enumerate(lines) if re.match(rf"^  {key}:\s*$", l)), None)
     if start is None:
-        raise SystemExit("ERROR  no `  chapters:` key found under `book:` - restore it and re-run.")
+        if not block:
+            return text
+        anchor = before and next((i for i, l in enumerate(lines) if re.match(rf"^  {before}:\s*$", l)), None)
+        if anchor is None:
+            raise SystemExit(f"ERROR  no `  {before or key}:` key found under `book:` - restore it and re-run.")
+        return "\n".join(lines[:anchor] + block.split("\n") + lines[anchor:])
     end = start + 1
     while end < len(lines) and (not lines[end].strip() or lines[end].startswith("   ")):
         end += 1
     while end > start + 1 and not lines[end - 1].strip():   # keep trailing blank lines outside
         end -= 1
-    return "\n".join(lines[:start] + block.split("\n") + lines[end:])
+    return "\n".join(lines[:start] + (block.split("\n") if block else []) + lines[end:])
 
 
 def sync_images(check: bool) -> list[str]:
-    """Mirror `_shared/images/` into `en-US/images/` and `zh-TW/images/` as real
+    """Mirror `_shared/images/` into each built edition's `images/` as real
     files (Typst's PDF sandbox refuses paths - and so refuses symlinks that
     resolve outside the project - so each edition needs its own copy)."""
     changes: list[str] = []
@@ -119,7 +151,7 @@ def sync_images(check: bool) -> list[str]:
         for p in bu.SHARED_IMAGES.rglob("*") if p.is_file()
     } if bu.SHARED_IMAGES.exists() else {}
 
-    for lang in bu.LANGS:
+    for lang in bu.editions():
         dest_dir = bu.ROOT / lang / "images"
         for rel, src in src_files.items():
             dst = dest_dir / rel
@@ -140,10 +172,11 @@ def sync_images(check: bool) -> list[str]:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--check", action="store_true", help="report only, change nothing")
-    ap.add_argument("--prune", action="store_true", help="delete orphaned zh-TW pages")
+    ap.add_argument("--prune", action="store_true", help="delete orphaned en-US pages")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args()
 
+    english = bu.english_enabled()
     changes: list[str] = []
     warnings: list[str] = []
 
@@ -152,8 +185,8 @@ def main() -> int:
 
     pages: dict[Path, dict[str, str]] = {}
 
-    for rel in bu.en_pages():
-        src = bu.EN / rel
+    for rel in bu.src_pages():
+        src = bu.SRC / rel
         text = bu.read(src)
         fm = bu.get_fm(text)
         created = bu.created_date(src, fm.get("created"))
@@ -164,67 +197,70 @@ def main() -> int:
         if new_text != text:
             if not args.check:
                 bu.write(src, new_text, keep_mtime=True)
-            note(f"dates   {bu.EN.name}/{rel.as_posix()} (created {created}, updated {updated})")
+            note(f"dates   {bu.SRC.name}/{rel.as_posix()} (created {created}, updated {updated})")
         fm.update({"created": created, "updated": updated})
         pages[rel] = fm
 
-        # --- chapter level (authored on the English page only) ----------------
+        # --- chapter level (authored on the Chinese page only) ----------------
         level = fm.get("level") or None
         if rel.as_posix() == "index.qmd":
             if level:
                 warnings.append("index.qmd has a `level:` key - levels are for chapters only, it is ignored.")
             level = None
         elif level is None:
-            warnings.append(f"{bu.EN.name}/{rel.as_posix()} has no `level:` "
+            warnings.append(f"{bu.SRC.name}/{rel.as_posix()} has no `level:` "
                             f"(one of: {', '.join(bu.LEVELS)}).")
         elif level not in bu.LEVELS:
-            warnings.append(f"{bu.EN.name}/{rel.as_posix()} has unknown level '{level}' "
+            warnings.append(f"{bu.SRC.name}/{rel.as_posix()} has unknown level '{level}' "
                             f"(one of: {', '.join(bu.LEVELS)}); not shown.")
             level = None
         mirrored = {"level": level, "created": created, "updated": updated}
 
-        # --- zh-TW counterpart -------------------------------------------------
-        dst = bu.ZH / rel
+        # --- en-US counterpart (only once the English edition is on) ----------
+        if not english:
+            continue
+        dst = bu.DST / rel
         if not dst.exists():
             stub = bu.set_fm(bu.body_of(new_text), {"translation-of": STUB_NOTE, **mirrored})
             if not args.check:
                 bu.write(dst, stub)
-            note(f"created {bu.ZH.name}/{rel.as_posix()} (untranslated stub)")
+            note(f"created {bu.DST.name}/{rel.as_posix()} (untranslated stub)")
         else:
-            zt = bu.read(dst)
-            nzt = bu.set_fm(zt, mirrored)
-            if nzt != zt:
+            dt = bu.read(dst)
+            ndt = bu.set_fm(dt, mirrored)
+            if ndt != dt:
                 if not args.check:
-                    bu.write(dst, nzt, keep_mtime=True)
-                note(f"meta    {bu.ZH.name}/{rel.as_posix()}")
+                    bu.write(dst, ndt, keep_mtime=True)
+                note(f"meta    {bu.DST.name}/{rel.as_posix()}")
 
     # --- orphaned translations -------------------------------------------------
-    for p in sorted(bu.ZH.rglob("*.qmd")):
-        if "_book" in p.parts:
-            continue
-        rel = p.relative_to(bu.ZH)
-        if rel in pages:
-            continue
-        if args.prune and not args.check:
-            p.unlink()
-            note(f"deleted {bu.ZH.name}/{rel.as_posix()} (no English source)")
-        else:
-            warnings.append(f"{bu.ZH.name}/{rel.as_posix()} has no English source (run with --prune to delete)")
+    if english:
+        for rel in bu.pages_in(bu.DST):
+            if rel in pages:
+                continue
+            if args.prune and not args.check:
+                (bu.DST / rel).unlink()
+                note(f"deleted {bu.DST.name}/{rel.as_posix()} (no Chinese source)")
+            else:
+                warnings.append(f"{bu.DST.name}/{rel.as_posix()} has no Chinese source (run with --prune to delete)")
 
     # --- shared images -----------------------------------------------------
     changes += sync_images(args.check)
 
-    # --- chapter lists ---------------------------------------------------------
+    # --- chapter lists and language switch -----------------------------------
+    # Both chapter lists are kept current even while the English edition is
+    # off, so en-US/ always mirrors the book's structure.
     tree, tree_warnings = chapter_tree(pages)
     warnings += tree_warnings
     for lang in bu.LANGS:
         cfg = bu.ROOT / lang / "_quarto.yml"
         text = bu.read(cfg)
-        new_text = replace_chapters_block(text, render_chapters(tree, lang))
+        new_text = replace_block(text, "chapters", render_chapters(tree, lang))
+        new_text = replace_block(new_text, "sidebar", render_sidebar(lang, english), before="chapters")
         if new_text != text:
             if not args.check:
                 bu.write(cfg, new_text)
-            note(f"updated {lang}/_quarto.yml chapter list")
+            note(f"updated {lang}/_quarto.yml")
 
     if not args.quiet:
         for w in warnings:

@@ -13,20 +13,8 @@ book:
   repo-actions: [edit, issue]
   output-file: handbook-en
   downloads: [pdf]
-  sidebar:
-    tools:
-      - icon: translate
-        text: "中文版"
-        href: ../zh-TW/index.html
   chapters:
     - index.qmd
-    - part: "Basics"
-      chapters:
-        - basics/01-fastq.qmd
-        - basics/02-blast.qmd
-    - part: "Environment"
-      chapters:
-        - environment/system.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).
@@ -43,3 +31,8 @@ format:
       - ../_shared/part-numbers.html
   typst:
     papersize: a4
+    # CJK fallback: untranslated pages still show the Chinese original.
+    include-in-header:
+      text: |
+        #set text(font: ("Libertinus Serif", "Noto Serif CJK TC"))
+        #show raw: set text(font: ("DejaVu Sans Mono", "Noto Sans CJK TC"))

@@ -13,20 +13,8 @@ book:
   repo-actions: [edit, issue]
   output-file: handbook-zh-TW
   downloads: [pdf]
-  sidebar:
-    tools:
-      - icon: translate
-        text: "English"
-        href: ../en-US/index.html
   chapters:
     - index.qmd
-    - part: "基礎"
-      chapters:
-        - basics/01-fastq.qmd
-        - basics/02-blast.qmd
-    - part: "環境"
-      chapters:
-        - environment/system.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).

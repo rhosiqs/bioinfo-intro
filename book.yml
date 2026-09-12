@@ -1,18 +1,23 @@
 # Book structure - the only file you edit besides the pages themselves.
 #
-# Every part is a folder: en-US/<id>/ holds that part's pages, and each page's
-# `order: 20` front matter sets where it sits inside the part. This file gives
-# every part id its two titles and fixes the part order; the "Part I" /
-# "第一部分" prefix is added automatically from that order, so don't number
-# the titles yourself. Pages directly in en-US/ (no folder) appear at the top
-# level, right after index.qmd.
+# The Traditional Chinese edition (zh-TW/) is the one you write. Every part is
+# a folder: zh-TW/<id>/ holds that part's pages, and each page's `order: 20`
+# front matter sets where it sits inside the part. This file gives every part
+# id its two titles and fixes the part order; the "第一部分" / "Part I" prefix
+# is added automatically from that order, so don't number the titles yourself.
+# Pages directly in zh-TW/ (no folder) appear at the top level, right after
+# index.qmd.
 #
 # After editing this file run the "Sync book" task (or just build).
 
+# English edition (en-US/). While false, the English pages are neither
+# created, built nor linked from the Chinese site. Set it to true once the
+# book is written: the next sync creates every English page as an
+# untranslated copy of the Chinese one, ready for batch translation.
+english: false
+
+# Example:
+#   - id: basics
+#     zh-TW: "基礎"
+#     en-US: "Basics"
 parts:
-  - id: basics
-    en-US: "Basics"
-    zh-TW: "基礎"
-  - id: environment
-    en-US: "Environment"
-    zh-TW: "環境"

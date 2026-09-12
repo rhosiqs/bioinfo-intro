@@ -4,8 +4,9 @@ Shared helpers for the bilingual Quarto book tooling (sync.py / check_translatio
 
 Design notes
 ------------
-* Only the English page is authored by hand. Everything else (the zh-TW stub,
-  both chapter lists, the created / last-modified dates) is derived from it.
+* Only the Traditional Chinese page (zh-TW/) is authored by hand. Everything
+  else (both chapter lists, the created / last-modified dates and, once the
+  English edition is switched on in book.yml, the en-US stub) is derived from it.
 * All machine-managed state lives in the YAML front matter of the .qmd files,
   so the repository stays self-describing and no side-car database can drift.
 * The translation hash covers the page BODY only, so refreshing a date,
@@ -28,14 +29,16 @@ ROOT = Path(__file__).resolve().parent.parent
 EN = ROOT / "en-US"
 ZH = ROOT / "zh-TW"
 LANGS = (EN.name, ZH.name)
+# The edition you write, and the one translated from it.
+SRC, DST = ZH, EN
 BOOK_YML = ROOT / "book.yml"
 SHARED_IMAGES = ROOT / "_shared" / "images"
 
 # Front matter keys we manage, in the order they are written back.
 FM_ORDER = ["order", "level", "created", "updated", "translation-of", "reviewed"]
 
-# Chapter levels, easiest first. The author sets `level:` on each English
-# chapter; sync.py copies it to the Chinese page. Display labels (en / zh-TW)
+# Chapter levels, easiest first. The author sets `level:` on each Chinese
+# chapter; sync.py copies it to the English page. Display labels (en / zh-TW)
 # live in tools/page-meta.lua - keep both lists in step.
 LEVELS = ("basic", "beginner", "intermediate", "advanced")
 DEFAULT_LEVEL = "basic"
@@ -213,14 +216,40 @@ def load_parts() -> list[dict[str, str]]:
     return [p for p in parts if p.get("id")]
 
 
+def book_setting(key: str) -> str | None:
+    """A top-level `key: value` from book.yml."""
+    if not BOOK_YML.exists():
+        return None
+    for raw in read(BOOK_YML).split("\n"):
+        if raw.startswith(f"{key}:"):
+            return _unquote(raw.split(":", 1)[1])
+    return None
+
+
+def english_enabled() -> bool:
+    """`english: true` in book.yml. Until then the English edition is neither
+    derived, built nor linked."""
+    return (book_setting("english") or "").lower() in ("true", "yes", "on")
+
+
+def editions() -> list[str]:
+    """Edition directories that are built, the Chinese one first."""
+    return [ZH.name, EN.name] if english_enabled() else [ZH.name]
+
+
 # ------------------------------------------------------------------------- pages
 
-def en_pages() -> list[Path]:
-    """English pages, as paths relative to the English edition directory."""
+def pages_in(edition: Path) -> list[Path]:
+    """Pages of one edition, as paths relative to its directory."""
     return sorted(
-        p.relative_to(EN) for p in EN.rglob("*.qmd")
+        p.relative_to(edition) for p in edition.rglob("*.qmd")
         if "_book" not in p.parts and not p.name.startswith("_")
     )
+
+
+def src_pages() -> list[Path]:
+    """The pages you write (zh-TW/)."""
+    return pages_in(SRC)
 
 
 def part_of(rel: Path) -> str | None:

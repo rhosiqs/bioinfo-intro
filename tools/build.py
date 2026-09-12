@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """
-Build both language editions (HTML + PDF) and assemble one static site in _site/.
-Cross-platform (Windows / macOS / Linux); only needs Python 3.8+ and Quarto on PATH.
+Build the language editions (HTML + PDF) and assemble one static site in _site/.
+The Chinese edition is always built; the English one only once `english: true`
+is set in book.yml. Cross-platform (Windows / macOS / Linux); only needs
+Python 3.8+ and Quarto on PATH.
 
-  python tools/build.py                # sync, check translations, render both editions, assemble _site/
+  python tools/build.py                # sync, check translations, render the editions, assemble _site/
   python tools/build.py --serve        # same, then serve _site/ at http://localhost:8000 and
                                        # live-reload: every save re-renders just that page (HTML)
   python tools/build.py --serve --no-watch   # serve the one-off build, no live reload
@@ -24,7 +26,33 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bookutil as bu  # noqa: E402
 
 ROOT = bu.ROOT
-LANGS = list(bu.LANGS)
+
+# The site root sends visitors to their browser's language, falling back to
+# the Chinese edition (the primary one) - or always to it while it is the only
+# edition built.
+SITE_INDEX = """<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="utf-8">
+<title>植物生物資訊學入門</title>
+<script>
+  var en = {english} && !(navigator.language || "").toLowerCase().startsWith("zh");
+  window.location.replace(en ? "en-US/index.html" : "zh-TW/index.html");
+</script>
+</head>
+<body>
+<p>{links}</p>
+</body>
+</html>
+"""
+
+
+def write_site_index(site: Path) -> None:
+    editions = bu.editions()
+    names = {bu.ZH.name: "中文", bu.EN.name: "English"}
+    links = " | ".join(f'<a href="{lang}/index.html">{names[lang]}</a>' for lang in editions)
+    english = "true" if bu.EN.name in editions else "false"
+    (site / "index.html").write_text(SITE_INDEX.format(english=english, links=links), encoding="utf-8")
 
 
 
@@ -127,11 +155,11 @@ class LiveReloadHandler(http.server.SimpleHTTPRequestHandler):
 
 
 def watched_files() -> list[Path]:
-    files = [bu.BOOK_YML, ROOT / "index.html", ROOT / "tools" / "page-meta.lua"]
+    files = [bu.BOOK_YML, ROOT / "tools" / "page-meta.lua"]
     shared = ROOT / "_shared"
     if shared.exists():
         files += [p for p in shared.rglob("*") if p.is_file()]
-    for lang in LANGS:
+    for lang in bu.editions():
         d = ROOT / lang
         files += [
             p for p in d.rglob("*")
@@ -169,22 +197,21 @@ def rebuild(quarto: str, site: Path, changed: set[Path]) -> None:
     page (a _quarto.yml - which sync.py rewrites when a page is added, removed
     or reordered - book.yml, _shared/, the dates filter) re-renders that whole
     edition. The PDFs are only refreshed by a full build."""
+    langs = bu.editions()
     full: set[str] = set()
-    pages: dict[str, set[str]] = {lang: set() for lang in LANGS}
+    pages: dict[str, set[str]] = {lang: set() for lang in langs}
     for p in changed:
         rel = p.relative_to(ROOT)
         lang = rel.parts[0]
-        if p == ROOT / "index.html":
-            if p.exists():
-                shutil.copy2(p, site / "index.html")
-        elif lang in LANGS and p.suffix == ".qmd" and p.exists() and not p.name.startswith("_"):
+        if lang in langs and p.suffix == ".qmd" and p.exists() and not p.name.startswith("_"):
             pages[lang].add(rel.as_posix())
-        elif lang in LANGS:
+        elif lang in langs:
             full.add(lang)
-        else:
-            full.update(LANGS)
+        elif lang not in bu.LANGS:
+            full.update(langs)
+    write_site_index(site)
 
-    for lang in LANGS:
+    for lang in langs:
         targets = [lang] if lang in full else sorted(pages[lang])
         for target in targets:
             print(f"+ quarto render {target} --to html", flush=True)
@@ -211,7 +238,7 @@ def watch(quarto: str, site: Path, handler_cls, interval: float = 0.5) -> None:
                 break
             now = again
 
-        # Same bookkeeping as a full build: zh-TW stubs, chapter lists, dates.
+        # Same bookkeeping as a full build: chapter lists, dates, en-US stubs.
         # Unlike a full build, a failure is reported and the server keeps running.
         r = subprocess.run([sys.executable, "tools/sync.py"], cwd=ROOT,
                            capture_output=True, text=True)
@@ -254,25 +281,27 @@ def main() -> int:
         sys.exit("Quarto not found. Install it from https://quarto.org, or set QUARTO_PATH "
                  "to the quarto executable. Positron's bundled copy is picked up automatically.")
 
-    # Derive the zh-TW stubs, both chapter lists and the page dates from the
-    # English pages, so a forgotten bookkeeping step can never fail the build.
+    # Derive both chapter lists, the page dates and (with the English edition
+    # on) the en-US stubs from the Chinese pages, so a forgotten bookkeeping
+    # step can never fail the build.
     run([sys.executable, "tools/sync.py"])
 
     checker = [sys.executable, "tools/check_translations.py"]
     run(checker)
     if os.environ.get("CI") == "true":
-        # CI only: add "outdated / not yet reviewed" notices to zh-TW pages
+        # CI only: add "outdated / not yet reviewed" notices to en-US pages
         # in the throwaway checkout. Never runs on your working copy.
         run(checker + ["--annotate"])
 
-    for lang in LANGS:
+    langs = bu.editions()
+    for lang in langs:
         run([quarto, "render", lang])
 
     site = ROOT / "_site"
     shutil.rmtree(site, ignore_errors=True)
-    for lang in LANGS:
+    for lang in langs:
         shutil.copytree(ROOT / lang / "_book", site / lang)
-    shutil.copy2(ROOT / "index.html", site / "index.html")
+    write_site_index(site)
     (site / ".nojekyll").touch()
     print(f"Site assembled in {site}")
 

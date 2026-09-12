@@ -23,14 +23,14 @@ jobs:
         with:
           fetch-depth: 0      # full history: page "last updated" dates come from git
 
-      - name: Install CJK fonts (for the zh-TW PDF)
+      - name: Install CJK fonts (for the Chinese PDF)
         run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk
 
       - uses: quarto-dev/quarto-actions/setup@v2
         with:
           version: 1.10.18          # pin; bump deliberately
 
-      - name: Build both editions
+      - name: Build the editions
         run: python3 tools/build.py
 
       - if: github.event_name != 'pull_request'

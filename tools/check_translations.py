@@ -1,16 +1,20 @@
 #!/usr/bin/env python3
 """
-Translation status and consistency checker for the en / zh-TW Quarto books.
+Translation status and consistency checker for the zh-TW / en Quarto books.
 
-Status of each zh-TW page, from its `translation-of:` front matter key compared
-with the hash of the current English page BODY (front matter, i.e. dates and
+The Chinese edition is the one you write; the English one is translated from
+it. Nothing is checked while the English edition is off (`english: false` in
+book.yml).
+
+Status of each en-US page, from its `translation-of:` front matter key compared
+with the hash of the current Chinese page BODY (front matter, i.e. dates and
 order, is deliberately excluded - housekeeping never invalidates a review):
 
-  OK            reviewed against exactly this English text
-  OUTDATED      the English text changed after the review
-  DRAFT         AI draft of the current English text, not reviewed by a human yet
-  UNTRANSLATED  still the English text (a stub created by sync.py)
-  MISSING       no zh-TW file at all (sync.py normally prevents this)
+  OK            reviewed against exactly this Chinese text
+  OUTDATED      the Chinese text changed after the review
+  DRAFT         AI draft of the current Chinese text, not reviewed by a human yet
+  UNTRANSLATED  still the Chinese text (a stub created by sync.py)
+  MISSING       no en-US file at all (sync.py normally prevents this)
 
 Structural checks (errors, because they break the book or mislead readers -
 except on OUTDATED pages, where a stale translation is expected to differ and
@@ -28,7 +32,7 @@ Usage:
   python tools/check_translations.py --mark-draft FILE...   # "this is an AI draft"
   python tools/check_translations.py --stamp FILE...        # "I reviewed this"
   python tools/check_translations.py --stamp-all            # review-stamp every pending page
-  python tools/check_translations.py --annotate       # CI only: insert notices into zh-TW pages
+  python tools/check_translations.py --annotate       # CI only: insert notices into en-US pages
 No third-party dependencies.
 """
 from __future__ import annotations
@@ -41,7 +45,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import bookutil as bu  # noqa: E402
 
-SRC, DST = bu.EN, bu.ZH
+SRC, DST = bu.SRC, bu.DST
 KEY = "translation-of"
 DRAFT_PREFIX = "draft:"
 BATCH_FILE = bu.ROOT / "_translation-batch.md"
@@ -58,9 +62,13 @@ NOTICE = """
 :::
 """
 MESSAGES = {
-    "OUTDATED": "此頁的英文原文在翻譯審閱後已更新，中文內容可能有落差，請以英文版為準（左側選單可切換語言）。",
-    "DRAFT": "此頁為 AI 翻譯初稿，尚未經人工審閱，用字可能不精確；如有疑義請以英文版為準。",
-    "UNTRANSLATED": "此頁尚未翻譯，以下顯示英文原文。",
+    "OUTDATED": "The Chinese original of this page was revised after this translation was "
+                "reviewed, so the English may lag behind. The Traditional Chinese edition is "
+                "authoritative (switch language in the sidebar).",
+    "DRAFT": "This page is an AI-drafted translation that has not been reviewed yet, so the "
+             "wording may be imprecise. When in doubt, refer to the Traditional Chinese edition.",
+    "UNTRANSLATED": "This page has not been translated yet; the Traditional Chinese original "
+                    "is shown below.",
 }
 PENDING = ("OUTDATED", "DRAFT", "UNTRANSLATED", "MISSING")
 
@@ -90,7 +98,7 @@ def chapters(cfg: Path) -> list[str]:
 
 
 def pages() -> list[Path]:
-    return bu.en_pages()
+    return bu.src_pages()
 
 
 def status(rel: Path) -> str:
@@ -114,17 +122,17 @@ def structural_errors(rel: Path) -> list[str]:
     errs = []
     ca, cb = code_blocks(a), code_blocks(b)
     if len(ca) != len(cb):
-        errs.append(f"code block count differs: en={len(ca)} zh-TW={len(cb)}")
+        errs.append(f"code block count differs: {SRC.name}={len(ca)} {DST.name}={len(cb)}")
     else:
         for i, (x, y) in enumerate(zip(ca, cb), 1):
             if x != y:
                 errs.append(f"code block #{i} differs (code must be identical in both languages)")
     la, lb = set(LABEL_RE.findall(a)), set(LABEL_RE.findall(b))
     if la != lb:
-        errs.append(f"cross-ref labels differ: only en={sorted(la - lb)} only zh-TW={sorted(lb - la)}")
+        errs.append(f"cross-ref labels differ: only {SRC.name}={sorted(la - lb)} only {DST.name}={sorted(lb - la)}")
     ia, ib = IMAGE_RE.findall(a), IMAGE_RE.findall(b)
     if ia != ib:
-        errs.append(f"image paths differ: en={ia} zh-TW={ib}")
+        errs.append(f"image paths differ: {SRC.name}={ia} {DST.name}={ib}")
     return errs
 
 
@@ -151,13 +159,13 @@ def rel_of(arg: str) -> Path:
             return p.relative_to(base)
         except ValueError:
             continue
-    raise SystemExit(f"ERROR  {arg} is not inside {bu.EN.name}/ or {bu.ZH.name}/")
+    raise SystemExit(f"ERROR  {arg} is not inside {SRC.name}/ or {DST.name}/")
 
 
 def set_marker(rel: Path, value: str, reviewed: str | None) -> None:
     dst = DST / rel
     if not dst.exists():
-        raise SystemExit(f"ERROR  {bu.ZH.name}/{rel.as_posix()} does not exist - run tools/sync.py first")
+        raise SystemExit(f"ERROR  {DST.name}/{rel.as_posix()} does not exist - run tools/sync.py first")
     bu.write(dst, bu.set_fm(read(dst), {KEY: value, "reviewed": reviewed}))
 
 
@@ -168,18 +176,18 @@ def pending_pages() -> list[tuple[Path, str]]:
 def export_batch() -> None:
     items = pending_pages()
     if not items:
-        print("nothing pending - every zh-TW page is reviewed and current.")
+        print(f"nothing pending - every {DST.name} page is reviewed and current.")
         return
     prompt = read(PROMPT_FILE)
     prompt = prompt.split("\n---\n", 1)[-1].strip()
     out = ["# Translation batch", "",
-           f"{len(items)} page(s) need a zh-TW translation. Give the AI the instructions",
-           "below, then the English source of each page. Paste each translated body back",
-           "into the matching zh-TW file (front matter is managed by the tools - leave it",
+           f"{len(items)} page(s) need an English translation. Give the AI the instructions",
+           "below, then the Chinese source of each page. Paste each translated body back",
+           f"into the matching {DST.name} file (front matter is managed by the tools - leave it",
            "out), then run:  python tools/check_translations.py --mark-draft <files>", "",
            "## Instructions", "", prompt, "", "## Pages", ""]
     for rel, st in items:
-        out += [f"### {bu.ZH.name}/{rel.as_posix()}  ({st})", "",
+        out += [f"### {DST.name}/{rel.as_posix()}  ({st})", "",
                 "````````markdown", bu.body_of(read(SRC / rel)).strip(), "````````", ""]
     BATCH_FILE.write_text("\n".join(out), encoding="utf-8")
     print(f"wrote {BATCH_FILE.relative_to(bu.ROOT)} with {len(items)} page(s)")
@@ -196,11 +204,15 @@ def main() -> int:
     ap.add_argument("--mark-draft", nargs="+", metavar="FILE")
     args = ap.parse_args()
 
+    if not bu.english_enabled():
+        print("English edition is off (`english: false` in book.yml) - nothing to translate or check.")
+        return 0
+
     if args.mark_draft:
         for f in args.mark_draft:
             rel = rel_of(f)
             set_marker(rel, DRAFT_PREFIX + bu.body_digest(SRC / rel), None)
-            print(f"draft   {bu.ZH.name}/{rel.as_posix()}")
+            print(f"draft   {DST.name}/{rel.as_posix()}")
         return 0
 
     if args.stamp or args.stamp_all:
@@ -210,7 +222,7 @@ def main() -> int:
         for rel in dict.fromkeys(targets):
             h = bu.body_digest(SRC / rel)
             set_marker(rel, h, bu.TODAY)
-            print(f"reviewed {bu.ZH.name}/{rel.as_posix()} <- {bu.EN.name}/{rel.as_posix()} @ {h}")
+            print(f"reviewed {DST.name}/{rel.as_posix()} <- {SRC.name}/{rel.as_posix()} @ {h}")
         if not targets:
             print("nothing to stamp.")
         return 0
@@ -220,14 +232,14 @@ def main() -> int:
             export_batch()
         else:
             for rel, st in pending_pages():
-                print(f"{st:<13}{bu.ZH.name}/{rel.as_posix()}")
+                print(f"{st:<13}{DST.name}/{rel.as_posix()}")
         return 0
 
     failed = False
-    ch_en, ch_zh = chapters(SRC / "_quarto.yml"), chapters(DST / "_quarto.yml")
-    if ch_en != ch_zh:
+    ch_src, ch_dst = chapters(SRC / "_quarto.yml"), chapters(DST / "_quarto.yml")
+    if ch_src != ch_dst:
         print(f"ERROR  _quarto.yml chapter lists differ (run tools/sync.py):"
-              f"\n  en:    {ch_en}\n  zh-TW: {ch_zh}")
+              f"\n  {SRC.name}: {ch_src}\n  {DST.name}: {ch_dst}")
         failed = True
 
     counts: dict[str, int] = {}
@@ -237,7 +249,7 @@ def main() -> int:
         errs = structural_errors(rel)
         if st != "OK" or errs:
             print(f"{st:<13}{rel.as_posix()}")
-        # An OUTDATED page is a translation of an older English text, so its
+        # An OUTDATED page is a translation of an older Chinese text, so its
         # code / labels / images are expected to lag behind. It still ships
         # (with a notice); the mismatch is fixed when the page is re-translated.
         fatal = st != "OUTDATED"
