@@ -20,6 +20,7 @@ book:
 # front matter, which tools/sync.py keeps up to date).
 filters:
   - ../tools/page-meta.lua
+  - ../tools/contributors.lua   # PDF fallback for the contributor wall (_shared/contributors.html)
 
 format:
   html:
@@ -29,6 +30,7 @@ format:
       - ../_shared/lang-switch.html
       - ../_shared/page-meta.html
       - ../_shared/part-numbers.html
+      - ../_shared/contributors.html
   typst:
     papersize: a4
     # CJK fallback: untranslated pages still show the Chinese original.

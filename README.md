@@ -1,3 +1,5 @@
+> 持續撰寫中，Github pages 暫時取消發布
+
 # 植物生物資訊學入門 Introduction to Plant Bioinformatics
 
 一本寫給植物濕實驗室研究人員的生物資訊入門書，從電腦與命令列的基礎開始，

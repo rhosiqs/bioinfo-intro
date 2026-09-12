@@ -1,0 +1,97 @@
+<style>
+/* contributor avatar wall: <div class="contributors" data-repo="owner/repo"> */
+.contributors-wall {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 1rem;
+  margin: 1rem 0 1.75rem;
+}
+.contributor {
+  width: 7.5rem;
+  text-align: center;
+  font-size: 0.85em;
+  line-height: 1.4;
+}
+.contributor img {
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  margin: 0 auto 0.4rem;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+.contributor-name { font-weight: 600; }
+.contributor-note { color: #6c757d; margin-top: 0.15rem; }
+.contributor-note p { margin: 0; }
+</style>
+<script>
+/*
+  Turns every <div class="contributors" data-repo="owner/repo"> into an avatar
+  wall of the repo's GitHub contributors (fetched in the reader's browser).
+  Each <div data-login="name">note</div> inside it adds a note under that
+  person; a login GitHub does not list (e.g. someone who only reported issues)
+  is added to the wall as well. If GitHub cannot be reached, the wall shows the
+  noted people only.
+*/
+document.addEventListener("DOMContentLoaded", function () {
+  var CACHE_HOURS = 1; // unauthenticated GitHub API: 60 requests / hour / IP
+
+  function fetchContributors(repo) {
+    var key = "contributors:" + repo;
+    try {
+      var hit = JSON.parse(localStorage.getItem(key));
+      if (hit && Date.now() - hit.time < CACHE_HOURS * 3600e3) return Promise.resolve(hit.people);
+    } catch (e) {}
+    return fetch("https://api.github.com/repos/" + repo + "/contributors?per_page=100")
+      .then(function (r) { return r.ok ? r.json() : []; })
+      .then(function (list) {
+        var people = list
+          .filter(function (p) { return p.type !== "Bot"; })
+          .map(function (p) { return { login: p.login, avatar: p.avatar_url + "&s=128" }; });
+        try { localStorage.setItem(key, JSON.stringify({ time: Date.now(), people: people })); } catch (e) {}
+        return people;
+      })
+      .catch(function () { return []; });
+  }
+
+  document.querySelectorAll(".contributors[data-repo]").forEach(function (box) {
+    var notes = {}, order = [];
+    box.querySelectorAll("[data-login]").forEach(function (el) {
+      var login = el.getAttribute("data-login").trim();
+      notes[login.toLowerCase()] = el.innerHTML.trim();
+      order.push(login);
+    });
+
+    fetchContributors(box.getAttribute("data-repo")).then(function (people) {
+      var seen = {};
+      people.forEach(function (p) { seen[p.login.toLowerCase()] = true; });
+      order.forEach(function (login) {
+        if (!seen[login.toLowerCase()]) {
+          people.push({ login: login, avatar: "https://github.com/" + login + ".png?size=128" });
+        }
+      });
+
+      var wall = document.createElement("div");
+      wall.className = "contributors-wall";
+      people.forEach(function (p) {
+        var url = "https://github.com/" + p.login;
+        var card = document.createElement("div");
+        card.className = "contributor";
+        card.innerHTML =
+          '<a href="' + url + '"><img src="' + p.avatar + '" alt="" loading="lazy"></a>' +
+          '<a class="contributor-name" href="' + url + '"></a>';
+        card.querySelector(".contributor-name").textContent = p.login;
+        var note = notes[p.login.toLowerCase()];
+        if (note) {
+          var n = document.createElement("div");
+          n.className = "contributor-note";
+          n.innerHTML = note;
+          card.appendChild(n);
+        }
+        wall.appendChild(card);
+      });
+      box.replaceChildren(wall);
+    });
+  });
+});
+</script>

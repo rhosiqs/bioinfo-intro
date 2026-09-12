@@ -5,7 +5,7 @@ project:
 lang: zh-TW
 
 book:
-  title: "植物生物資訊學入門"
+  title: "給wetlab的生物資訊學入門─基礎篇"
   author: "Rhosiqs"
   date: last-modified
   repo-url: https://github.com/rhosiqs/bioinfo-intro
@@ -20,6 +20,7 @@ book:
 # front matter, which tools/sync.py keeps up to date).
 filters:
   - ../tools/page-meta.lua
+  - ../tools/contributors.lua   # PDF fallback for the contributor wall (_shared/contributors.html)
 
 format:
   html:
@@ -29,6 +30,7 @@ format:
       - ../_shared/lang-switch.html
       - ../_shared/page-meta.html
       - ../_shared/part-numbers.html
+      - ../_shared/contributors.html
   typst:
     papersize: a4
     include-in-header:

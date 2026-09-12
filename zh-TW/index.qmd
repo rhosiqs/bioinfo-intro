@@ -4,3 +4,34 @@ updated: 2026-09-12
 ---
 
 # 前言 {.unnumbered}
+本系列預計分為三個階段：基礎篇、進階篇、高級篇。
+
+**基礎篇**：適合具有wetlab基礎，但沒有電腦及資訊基礎的人。從最基礎開始說起，不會有複雜指令。
+
+**進階篇**：適合曾經操作過終端機或是已經完成基礎篇的人。涵蓋管線 (pipe)建立、遠端連線 (SSH)、HPC等。
+
+**高級篇**：實際專案範例操作，如SNP calling、RNA-seq等。
+
+## 關於作者
+開發名[Rhosiqs](https://github.com/rhosiqs)，不喜歡把真實個人資訊放在網路上。目前為一個從園藝領域，往分子生物發展後，卻想要跨足生物資訊領域發展的學生。
+
+在入門的過程中，發現很少有公開的整合資源，可以讓完全沒有資訊背景的，但有良好生物背景的人，快速踏入生物資訊學領域。想要藉由此系列，讓需要使用生物資訊的人，哪怕沒有任何資訊背景，也可以快速上手。
+
+## 本書資訊
+因作者本人仍持續在學習生物資訊相關技術，部分內容深度可能會比市面上專業的參考書籍有所落差。但所有撰寫的內容絕對是有經過參考文件查證的，並非憑空想像而寫。每個頁面也都有**參考文獻**欄位可供參閱。
+
+期望在不久的將來，可以像堆積木一樣，慢慢的把此系列書籍完成
+
+## 貢獻
+若您對此領域有所了解，或是就是這方面的專家，歡迎透過頁面右側的[`編輯此頁面`](https://github.com/rhosiqs/bioinfo-intro/edit/main/zh-TW/index.qmd)或[`回報問題`](https://github.com/rhosiqs/bioinfo-intro/issues/new)進行編輯，一起讓本書更完整。
+
+<!-- 頭像會自動從 GitHub 抓取所有貢獻者。要為某人加備註，就加一行 data-login（填 GitHub 帳號）。 -->
+<div class="contributors" data-repo="rhosiqs/bioinfo-intro">
+<div data-login="rhosiqs">作者<br>主要內容編寫</div>
+<div data-login="claude">翻譯協作者（AI）<br>開發本書建置與翻譯工具、網站功能</div>
+</div>
+
+## 授權
+承蒙初衷，並秉持開源社群貢獻精神，歡迎任意引用、轉發、改寫，但禁止任何商業使用。遵循以下授權模式：
+
+This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">
