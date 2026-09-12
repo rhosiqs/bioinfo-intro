@@ -51,7 +51,10 @@ Subject line is `<type>: <short summary>` (lowercase type, English summary),
 e.g. `cont: update system page`. Pick the type by what changed:
 
 - `cont` - book content: pages under `en-US/` / `zh-TW/`, images, translations.
-- `docs` - scripts under `tools/` or other documentation (`README.md`,
-  `CLAUDE.md`, skills).
+- `feat` - a new feature of the site, PDF, or tooling (e.g. level badges,
+  part numbering).
+- `fix` - a bug fix in the site, PDF, build, or tooling.
+- `docs` - other updates to scripts under `tools/` or to documentation
+  (`README.md`, `CLAUDE.md`, skills) that are neither a feature nor a fix.
 - `chore` - routine maintenance: config, `.gitignore`, build/preview settings,
   dependency bumps.
