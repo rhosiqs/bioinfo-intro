@@ -8,13 +8,13 @@
 
 ## 閱讀
 
-- 線上版：<https://rhosiqs.github.io/bioinfo-intro/>
-- PDF：線上版側欄提供下載連結。
+線上版目前暫未公開，累積足夠內容後會發布到 GitHub Pages，並在網站側欄提供 PDF 下載。
+在此之前，可依照下方「在本機建置」的步驟自行產生網站與 PDF。
 
 ## 意見與修正
 
 歡迎透過 [GitHub Issues](https://github.com/rhosiqs/bioinfo-intro/issues) 回報錯誤或提出建議。
-網站的每一頁都附有「編輯此頁」與「回報問題」的連結，會直接對應到該頁的原始檔。
+網站發布後，每一頁都會附有「編輯此頁」與「回報問題」的連結，直接對應到該頁的原始檔。
 
 ## 在本機建置
 
@@ -141,8 +141,10 @@ updated: 2026-09-12
 
 ### 部署
 
-推送到 `main` 後，GitHub Actions 會建置已開啟的語言版（HTML + PDF）並部署到 GitHub Pages。
-Pull request 只建置與檢查，不部署。
+部署由 GitHub Actions workflow（`.github/workflows/publish.yml`）負責：推送到 `main` 後，
+建置已開啟的語言版（HTML + PDF）並部署到 GitHub Pages；pull request 只建置與檢查，不部署。
+
+網站暫未公開期間，GitHub Pages 已關閉，這個 workflow 也已停用，推送到 `main` 不會觸發建置。
 
 ### 目錄結構
 

@@ -3,7 +3,9 @@
 Bilingual Quarto book: `zh-TW/` (Traditional Chinese, the primary language,
 authored by hand) and `en-US/` (English, AI-translated from the Chinese in one
 batch once the book is written, then human-reviewed). Each built edition
-renders to HTML + PDF and deploys to GitHub Pages.
+renders to HTML + PDF and deploys to GitHub Pages - but publishing is paused
+for now: Pages is off and the "Build and deploy" workflow is disabled. Never
+re-enable either without asking.
 
 ## Rules
 
