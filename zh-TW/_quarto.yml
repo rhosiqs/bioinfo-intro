@@ -5,7 +5,7 @@ project:
 lang: zh-TW
 
 book:
-  title: "給wetlab的生物資訊學入門─基礎篇"
+  title: "給wetlab研究人員的生物資訊學入門"
   author: "Rhosiqs"
   date: last-modified
   repo-url: https://github.com/rhosiqs/bioinfo-intro
@@ -15,6 +15,9 @@ book:
   downloads: [pdf]
   chapters:
     - index.qmd
+    - part: "Environment"
+      chapters:
+        - Environment/basic-bash-command.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).

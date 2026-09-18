@@ -1,0 +1,14 @@
+---
+order: 10
+level: basic
+created: 2026-09-19
+updated: 2026-09-19
+---
+
+# 基礎Bash指令 {#sec-basic-bash-command}
+
+在這裡撰寫本章內容。
+
+## 參考資料 {.unnumbered}
+
+- Author A, Author B. (Year). Title. *Journal*, Volume(Issue), Pages. <https://doi.org/...>

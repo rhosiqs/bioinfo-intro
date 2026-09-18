@@ -1,16 +1,16 @@
 ---
 created: 2026-09-10
-updated: 2026-09-12
+updated: 2026-09-19
 ---
 
 # 前言 {.unnumbered}
-本系列預計分為三個階段：基礎篇、進階篇、高級篇。
+本系列預計分為三個階段。
 
-**基礎篇**：適合具有wetlab基礎，但沒有電腦及資訊基礎的人。從最基礎開始說起，不會有複雜指令。
+**階段一：基礎**：適合具有wetlab基礎，但沒有電腦及資訊基礎的人。從最基礎開始說起，不會有複雜指令。
 
-**進階篇**：適合曾經操作過終端機或是已經完成基礎篇的人。涵蓋管線 (pipe)建立、遠端連線 (SSH)、HPC等。
+**階段二：進階**：適合曾經操作過終端機或是已經完成基礎篇的人。涵蓋管線 (pipe)建立、遠端連線 (SSH)、HPC等。
 
-**高級篇**：實際專案範例操作，如SNP calling、RNA-seq等。
+**階段三：實戰範例**：實際專案範例操作，如SNP calling、RNA-seq等。
 
 ## 關於作者
 開發名[Rhosiqs](https://github.com/rhosiqs)，不喜歡把真實個人資訊放在網路上。目前為一個從園藝領域，往分子生物發展後，卻想要跨足生物資訊領域發展的學生。
@@ -32,6 +32,6 @@ updated: 2026-09-12
 </div>
 
 ## 授權
-承蒙初衷，並秉持開源社群貢獻精神，歡迎任意引用、轉發、改寫，但禁止任何商業使用。遵循以下授權模式：
+承蒙初衷，並秉持開源社群貢獻精神，希望可以讓需要踏入這塊領域的人有那麼一點點的整理可以查看。歡迎任意引用、轉發、改寫，但禁止任何商業使用。遵循以下授權模式：
 
 This work is licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a><img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;"><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" alt="" style="max-width: 1em;max-height:1em;margin-left: .2em;">

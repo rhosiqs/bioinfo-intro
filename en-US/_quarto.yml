@@ -15,6 +15,9 @@ book:
   downloads: [pdf]
   chapters:
     - index.qmd
+    - part: "Environment"
+      chapters:
+        - Environment/basic-bash-command.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).
