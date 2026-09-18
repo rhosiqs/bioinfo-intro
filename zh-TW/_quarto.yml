@@ -18,12 +18,14 @@ book:
     - part: "Environment"
       chapters:
         - Environment/basic-bash-command.qmd
+        - Environment/advanced-bash-command.qmd
 
 # Renders the per-page created / last-updated line (dates come from the
 # front matter, which tools/sync.py keeps up to date).
 filters:
   - ../tools/page-meta.lua
   - ../tools/contributors.lua   # PDF fallback for the contributor wall (_shared/contributors.html)
+  - ../tools/terminal.lua       # colourises ```{.terminal} blocks (HTML only)
 
 format:
   html:
@@ -33,6 +35,7 @@ format:
       - ../_shared/lang-switch.html
       - ../_shared/page-meta.html
       - ../_shared/part-numbers.html
+      - ../_shared/terminal.html
       - ../_shared/contributors.html
   typst:
     papersize: a4

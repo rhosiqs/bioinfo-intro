@@ -1,0 +1,24 @@
+---
+order: 20
+level: beginner
+created: 2026-09-19
+updated: 2026-09-19
+---
+
+# 進階Bash指令 {#sec-advanced-bash-command}
+
+在[基礎bash指令](zh-TW/Environment/basic-bash-command.qmd)中，已經了解了一些常用、最基礎的指令。接下來的這些指令可以增加運行效率，或是達到像Windows、MacOS檔案總管一樣的管理效果。
+
+## 執行bash檔案
+<!-- chmod -->
+
+## 紀錄
+<!-- log檔案、執行時間 -->
+
+## 遠端連線
+
+## tmux
+
+## 參考資料 {.unnumbered}
+
+- Author A, Author B. (Year). Title. *Journal*, Volume(Issue), Pages. <https://doi.org/...>
