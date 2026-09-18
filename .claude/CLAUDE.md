@@ -29,6 +29,11 @@ re-enable either without asking.
   managed); en-US pages add `translation-of`, `reviewed` (machine-managed;
   `level` and the dates are mirrored to en-US by `sync.py`). There is no
   `part:` key.
+- Two kinds of shell blocks: ```` ```bash ```` for commands the reader types
+  (highlighted, copy button), ```` ```{.terminal} ```` for what the terminal
+  shows - prompts, output, whole sessions. The latter is styled as a dark
+  terminal window by `_shared/terminal.html` (HTML only; PDF falls back to a
+  plain code block) and has no copy button.
 - File names, URLs and `{#sec-...}` labels use an English slug
   (`new_page.py --slug`), never Chinese, and carry no number prefix.
 - `level:` is one of `basic` / `beginner` / `intermediate` / `advanced`, on

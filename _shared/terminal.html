@@ -1,0 +1,47 @@
+<style>
+/* Terminal-screen blocks: ```{.terminal} ... ```
+   Use these for what the terminal SHOWS (prompts, program output, sessions).
+   Commands the reader is meant to type stay in a normal ```bash block, which
+   keeps its syntax highlighting and copy button. Typst/PDF ignores the class
+   and falls back to an ordinary code block. */
+pre.terminal {
+  background: #1e2127;
+  color: #d7dae0;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6em 1em 1em;
+  margin: 1.2em 0;
+  overflow-x: auto;
+  line-height: 1.5;
+  font-size: 0.875em;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.25);
+}
+pre.terminal code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  font-family: "SFMono-Regular", "Menlo", "Consolas", "DejaVu Sans Mono",
+               "Noto Sans Mono CJK TC", monospace;
+  white-space: pre;
+}
+/* the three window dots */
+pre.terminal::before {
+  content: "";
+  display: block;
+  width: 0.72em;
+  height: 0.72em;
+  margin: 0.15em 0 0.85em 0.1em;
+  border-radius: 50%;
+  background: #ff5f56;
+  box-shadow: 1.2em 0 0 #ffbd2e, 2.4em 0 0 #27c93f;
+}
+/* the parts tools/terminal.lua marks up inside a terminal screen */
+.term-user  { color: #98c379; font-weight: 600; }   /* user@host   */
+.term-path  { color: #61afef; }                     /* working dir */
+.term-punct { color: #8b929e; }                     /* : and $ / # */
+.term-cmd   { color: #ffffff; }                     /* what you type */
+.term-out   { color: #abb2bf; }                     /* what it prints */
+
+/* a terminal screen is not meant to be copied wholesale */
+pre.terminal .code-copy-button { display: none; }
+</style>
