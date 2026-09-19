@@ -19,12 +19,81 @@ user@host:path$
 
 其中，`user`欄位代表使用者、`host`代表主機名稱、`:`後面的`path`則代表的路徑。`$`則代表為一般使用者。
 
-## 如何提升的輸入效率
+若要終止現在的的執行指令，可以按下`Ctrl` + `C`鍵；若是要離開整個終端機頁面，則可以輸入
+```{.terminal}
+exit
+```
+並按下`Enter` 鍵，以關閉終端機
+
+## 如何提升輸入效率
 <!-- tab使用、方向鍵... -->
+善用快捷鍵可以提高指令的輸入效率。在終端機頁面中，
+
 
 ## 確認系統狀態
 
+### 內建終端機工作檢視器
+::: {.callout-note}
+## 使用指令
+```bash
+top
+```
+:::
+
+相信不論是Windows或是MacOS 使用者多多少少都有開啟過內建的工作管理員，在電腦卡頓時可以找出元兇。
+
+在Linux內，終端機版的工作管理源就是`top`，大概會是類似下面的樣子：
+```{.terminal}
+user@host:~$ top
+top - 13:45:11 up 31 min,  1 user,  load average: 0.23, 0.10, 0.08
+Tasks:  45 total,   1 running,  44 sleeping,   0 stopped,   0 zombie
+%Cpu(s):  0.5 us,  0.8 sy,  0.0 ni, 97.8 id,  0.6 wa,  0.0 hi,  0.3 si,  0.0 st 
+MiB Mem :  24034.1 total,  21920.0 free,   1720.2 used,    662.1 buff/cache     
+MiB Swap:   6144.0 total,   6144.0 free,      0.0 used.  22313.9 avail Mem 
+
+  PID   USER   PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND                                                  
+  488   user   20   0   10.0g 528792  64380 S   3.0   2.1   0:57.95 MainThread                                               
+12409   root   20   0 1756368  12772  10852 S   0.7   0.1   0:00.02 wsl-pro-service                                          
+  409   user   20   0 1812592 180336  53676 S   0.3   0.7   0:14.82 MainThread   
+```
+
+::: {.callout-important}
+still not finished
+:::
+
+如果覺得內建的不好看，推薦可以使用透過終端機安裝`htop`，畫面比較好看。有興趣的可以自行查詢。
+
+### 查看記憶體資訊
+::: {.callout-note}
+## 使用指令
+快速查看、易懂：
+```bash
+free -h
+```
+詳細資訊
+```bash
+cat /proc/meminfo
+```
+:::
+
 ## 檔案操作
+
+### 查看目前路徑
+::: {.callout-note}
+## 使用指令
+```bash
+pwd
+```
+:::
+
+路徑就像是門牌、電子郵件地址。輸入錯誤或是在錯誤的位置下指令會造成不同的結果。這時候就可以使用`pwd`指令確認所在位置
+
+```{.terminal}
+user@host:~$ pwd
+/home/host
+```
+
+以上述範例來說，終端機預設開啟頁面都會在`~`上（代表根目錄）。因此我的目前位置就是在家目錄`home`的`user`資料夾（像這邊的username 叫做`host`）。
 
 ## 資料夾操作
 
